@@ -16,7 +16,7 @@
         }
 
         .logo-container {
-            margin-bottom: 40px;
+            margin-bottom: 20px;
         }
 
         .logo-img {
@@ -25,7 +25,7 @@
         }
 
         p {
-            font-size: 18px;
+            font-size: 16px;
             color: #2d5a47;
             max-width: 600px;
         }
@@ -33,7 +33,7 @@
         input {
             width: 100%;
             max-width: 600px;
-            padding: 16px 20px;
+            padding: 12px 16px;
             font-size: 18px;
             border: 2px solid #b8d4c9;
             border-radius: 12px;
@@ -54,9 +54,9 @@
         }
 
         button {
-            margin-top: 30px;
-            padding: 16px 40px;
-            font-size: 20px;
+            margin-top: 20px;
+            padding: 12px 30px;
+            font-size: 18px;
             font-weight: 600;
             background-color: #18623a;
             color: #f0f5f2;
@@ -77,17 +77,17 @@
         }
 
         #display {
-            font-size: 72px;
+            font-size: 56px;
             font-weight: 700;
-            margin: 40px 0;
-            min-height: 100px;
+            margin: 20px 0;
+            min-height: 70px;
             color: #333333;
             transition: color 0.4s ease;
         }
 
         #logo {
             width: 100%;
-            max-width: 250px;
+            max-width: 180px;
             height: auto;
         }
 
@@ -107,7 +107,7 @@
 
         @media (max-width: 768px) {
             #display {
-                font-size: 48px;
+                font-size: 40px;
             }
         }
     </style>
@@ -115,13 +115,13 @@
 
 <body class="bg-white">
     <div class="container">
-           <div class="row justify-content-center py-5">
+           <div class="row justify-content-center py-3">
             <div class="row">
                 <div class="col-md-4">
                     <img id="logo" src="src/fortuna_logo.png" alt="">
                     <h3>Loto</h3>
                     <div class="text-center mt-4">
-                        <img src="https://api.qrserver.com/v1/create-qr-code/?size=100x100&data=https://chat.whatsapp.com/GbegcL4XMDZK3xb1mpuKM5"
+                        <img src="https://api.qrserver.com/v1/create-qr-code/?size=80x80&data=https://chat.whatsapp.com/GbegcL4XMDZK3xb1mpuKM5"
                             alt="QR de contacto" class="mb-3"
                             style="border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
                         <br>
@@ -130,8 +130,8 @@
                         <p class="mt-3 mb-0 text-muted small">© Fortuna</p>
                     </div>
                 </div>
-                <div class="col-md-6">
-                    <div class="card border-0 shadow-sm p-5"
+                <div class="col-md-8">
+                    <div class="card border-0 shadow-sm p-4"
                         style="background: linear-gradient(135deg, #f8f9fa 0%, #ffffff 100%); border-radius: 16px;">
                         <p class="fw-500 mb-4">Introduce los participantes separados por comas</p>
                         <input type="text" id="list" placeholder="Ej: Ana, Luis, María, Pedro..." class="mb-4">
@@ -139,15 +139,16 @@
                         <div id="display">• • •</div>
                     </div>
                 </div>
-                <div class="col-md-2">
-            <div id="frame" style="width: 100%;margin: auto;position: relative; z-index: 99998;">
-                <iframe data-aa='2420971' src='//acceptable.a-ads.com/2420971/?size=Adaptive'
-                    style='border:0; padding:0; width:50%; height:auto; overflow:hidden;display: block;margin: auto'></iframe>
-            </div>
-        </div>
             </div>
         </div>
     </div>
+
+    <footer class="text-center py-2">
+        <div id="frame" style="width: 100%;margin: auto;position: relative; z-index: 99998;">
+            <iframe data-aa='2420971' src='//acceptable.a-ads.com/2420971/?size=Adaptive'
+                style='border:0; padding:0; width:50%; height:auto; overflow:hidden;display: block;margin: auto'></iframe>
+        </div>
+    </footer>
 
     <!-- Audio de ganador -->
     <audio id="winnerSound" preload="auto">
