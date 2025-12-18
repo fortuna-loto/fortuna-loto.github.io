@@ -24,13 +24,13 @@
         /* Navbar sticky solo en móvil */
         .mobile-header {
             display: none;
-            background-color: #18623a;
-            color: #f0f5f2;
+            background-color: #ffffff; /* Blanco en móvil */
+            color: #1a3a2a;
             padding: 10px 15px;
             position: sticky;
             top: 0;
             z-index: 1000;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.15);
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
         }
 
         .mobile-header .logo-img {
@@ -54,6 +54,13 @@
             font-size: 0.85rem;
             padding: 5px 10px;
             white-space: nowrap;
+            background-color: #18623a; /* Verde como en desktop */
+            color: #f0f5f2;
+            border: none;
+        }
+
+        .mobile-header .btn:hover {
+            background-color: #2a8c52;
         }
 
         .main-container {
@@ -69,17 +76,17 @@
             padding: 1rem;
         }
 
-        /* Pestañas normales en desktop */
+        /* Pestañas normales y proporcionadas en desktop */
         .nav-tabs .nav-link {
             font-weight: 600;
             color: #18623a;
-            padding: 8px 16px;
+            padding: 10px 18px;
             font-size: 1rem;
         }
 
         .nav-tabs .nav-link i {
             font-size: 1.3rem;
-            margin-right: 6px;
+            margin-right: 8px;
         }
 
         .nav-tabs .nav-link.active {
@@ -91,10 +98,10 @@
         .tab-pane {
             background: linear-gradient(135deg, #f8f9fa 0%, #ffffff 100%);
             border-radius: 16px;
-            padding: 1.5rem;
+            padding: 2rem;
             box-shadow: 0 6px 20px rgba(24, 98, 58, 0.15);
-            height: calc(100vh - 180px);
-            max-height: 600px;
+            height: calc(100vh - 200px);
+            max-height: 650px;
             display: flex;
             flex-direction: column;
             justify-content: center;
@@ -102,10 +109,10 @@
         }
 
         #display, #liveDisplay {
-            font-size: 46px;
+            font-size: 50px;
             font-weight: 700;
-            margin: 15px 0;
-            min-height: 70px;
+            margin: 20px 0;
+            min-height: 80px;
         }
 
         .winner {
@@ -121,16 +128,16 @@
         .dice-container {
             display: flex;
             justify-content: center;
-            gap: 25px;
+            gap: 30px;
             flex-wrap: wrap;
-            margin: 15px 0;
+            margin: 20px 0;
             perspective: 1000px;
         }
 
         .dice {
-            font-size: 90px;
-            width: 130px;
-            height: 130px;
+            font-size: 100px;
+            width: 140px;
+            height: 140px;
             background: linear-gradient(145deg, #ffffff, #f0f0f0);
             border-radius: 20px;
             box-shadow: 0 12px 25px rgba(0,0,0,0.3), inset 0 4px 8px rgba(255,255,255,0.8), inset 0 -4px 8px rgba(0,0,0,0.1);
@@ -154,18 +161,18 @@
         }
 
         #diceResult {
-            font-size: 36px;
+            font-size: 40px;
             font-weight: bold;
             color: #18623a;
-            min-height: 50px;
+            min-height: 60px;
         }
 
-        #liveTitle { font-size: 24px; font-weight: bold; margin-bottom: 8px; }
-        #livePremio { font-size: 20px; color: #18623a; margin-bottom: 12px; }
-        #countdown { font-size: 44px; font-weight: bold; color: #18623a; margin: 10px 0; }
-        #liveParticipants { font-size: 14px; max-height: 80px; overflow-y: auto; margin: 10px 0; padding: 8px; background: rgba(24,98,58,0.05); border-radius: 8px; }
+        #liveTitle { font-size: 28px; font-weight: bold; margin-bottom: 10px; }
+        #livePremio { font-size: 22px; color: #18623a; margin-bottom: 15px; }
+        #countdown { font-size: 48px; font-weight: bold; color: #18623a; margin: 15px 0; }
+        #liveParticipants { font-size: 15px; max-height: 100px; overflow-y: auto; margin: 15px 0; padding: 10px; background: rgba(24,98,58,0.05); border-radius: 8px; }
 
-        /* Responsive: Móvil - pestañas pequeñas (sm) */
+        /* Responsive: Móvil - pestañas pequeñas */
         @media (max-width: 992px) {
             .mobile-header {
                 display: flex;
@@ -184,10 +191,9 @@
             .tab-pane {
                 height: calc(100vh - 130px);
                 border-radius: 16px 16px 0 0;
-                padding: 1rem;
+                padding: 1.2rem;
             }
 
-            /* Pestañas pequeñas en móvil usando clases Bootstrap */
             .nav-tabs .nav-link {
                 padding: 6px 12px;
                 font-size: 0.9rem;
@@ -200,12 +206,12 @@
         }
 
         @media (max-width: 768px) {
-            #display, #liveDisplay, #countdown { font-size: 36px; }
+            #display, #liveDisplay, #countdown { font-size: 38px; }
             .dice { font-size: 70px; width: 100px; height: 100px; }
-            #diceResult { font-size: 28px; }
-            #liveTitle { font-size: 20px; }
-            #livePremio { font-size: 18px; }
-            #liveParticipants { font-size: 13px; }
+            #diceResult { font-size: 30px; }
+            #liveTitle { font-size: 22px; }
+            #livePremio { font-size: 20px; }
+            #liveParticipants { font-size: 14px; }
             .mobile-header .logo-img { width: 60px; }
             .mobile-header .qr-img { width: 40px; height: 40px; }
             .mobile-header .btn { font-size: 0.8rem; padding: 4px 8px; }
@@ -228,7 +234,7 @@
         <div class="qr-btn-group">
             <img src="https://api.qrserver.com/v1/create-qr-code/?size=90x90&data=https://chat.whatsapp.com/GbegcL4XMDZK3xb1mpuKM5"
                 alt="QR" class="qr-img">
-            <a href="https://chat.whatsapp.com/GbegcL4XMDZK3xb1mpuKM5" target="_blank" class="btn btn-light btn-sm">
+            <a href="https://chat.whatsapp.com/GbegcL4XMDZK3xb1mpuKM5" target="_blank" class="btn btn-sm">
                 Únete al grupo
             </a>
         </div>
