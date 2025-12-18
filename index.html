@@ -22,7 +22,6 @@
             overflow: hidden;
         }
 
-        /* Header móvil sticky */
         .mobile-header {
             display: none;
             background-color: #ffffff;
@@ -143,16 +142,24 @@
         }
 
         .sorteo-finalizado {
-            font-size: 1.8rem;
+            font-size: 2.2rem;
             color: #18623a;
-            margin: 1rem 0;
-            font-weight: 600;
+            margin: 1.5rem 0;
+            font-weight: 700;
         }
 
         .fecha-sorteo {
-            font-size: 1.4rem;
+            font-size: 1.6rem;
             color: #555;
             margin-bottom: 2rem;
+            font-style: italic;
+        }
+
+        .ganador-final {
+            font-size: 5rem;
+            font-weight: 900;
+            margin: 2rem 0;
+            min-height: 160px;
         }
 
         .qr-section {
@@ -197,16 +204,16 @@
                 font-size: 3.5rem;
             }
 
-            #liveDisplay {
-                font-size: 3.5rem;
+            #liveDisplay, .ganador-final {
+                font-size: 3.8rem;
             }
 
             .sorteo-finalizado {
-                font-size: 1.5rem;
+                font-size: 1.8rem;
             }
 
             .fecha-sorteo {
-                font-size: 1.2rem;
+                font-size: 1.3rem;
             }
 
             .logo-img {
@@ -228,8 +235,8 @@
                 letter-spacing: 2px;
             }
 
-            #liveDisplay {
-                font-size: 3rem;
+            #liveDisplay, .ganador-final {
+                font-size: 3.2rem;
             }
 
             .mobile-header .logo-img {
@@ -276,7 +283,7 @@
         </div>
     </main>
 
-    <!-- Publicidad sticky restaurada -->
+    <!-- Publicidad sticky -->
     <div style="position:absolute;z-index:99999">
         <input type="checkbox" id="aadsstickymjaosk6z" hidden autocomplete="off">
         <div>
@@ -306,6 +313,7 @@
 
         let sorteoData = null;
         let sorteoInterval = null;
+        let winnerName = null; // Guardamos el ganador para mostrarlo después
 
         async function getSurinameTime() {
             try {
@@ -341,6 +349,8 @@
             Math.seedrandom(sorteoData.hora);
 
             const winnerIndex = Math.floor(Math.random() * items.length);
+            winnerName = items[winnerIndex]; // Guardamos el ganador
+
             const totalCycles = 8 + Math.floor(Math.random() * 4);
             const totalTicks = totalCycles * items.length + winnerIndex;
             let step = 0;
@@ -349,10 +359,10 @@
                 liveDisplay.textContent = items[step % items.length];
                 step++;
                 if (step >= totalTicks) {
-                    liveDisplay.textContent = items[winnerIndex];
+                    liveDisplay.textContent = winnerName;
                     liveDisplay.classList.add('winner');
                     setTimeout(() => {
-                        liveDisplay.innerHTML = `${items[winnerIndex]}<br><span style="font-size:0.7em;opacity:0.9">¡GANADOR!</span>`;
+                        liveDisplay.innerHTML = `${winnerName}<br><span style="font-size:0.7em;opacity:0.9">¡GANADOR!</span>`;
                         winnerAudio.currentTime = 0;
                         winnerAudio.play().catch(() => {});
                         launchConfetti();
@@ -404,6 +414,7 @@
                 const initialDiff = sorteoTime - initialTime;
 
                 if (initialDiff <= 0) {
+                    // Sorteo ya finalizado
                     countdownElem.innerHTML = '';
                     sorteoFinalizado.textContent = '¡Sorteo Finalizado!';
                     sorteoFinalizado.style.display = 'block';
@@ -412,33 +423,7 @@
                     fechaSorteo.textContent = `Realizado el ${sorteoTime.toLocaleDateString('es-ES', options)} (hora de Suriname)`;
                     fechaSorteo.style.display = 'block';
 
-                    startDraw(sorteoData.participantes);
-                } else {
-                    sorteoInterval = setInterval(async () => {
-                        const now = await getSurinameTime();
-                        const diff = sorteoTime - now;
-
-                        if (diff <= 0) {
-                            clearInterval(sorteoInterval);
-                            countdownElem.innerHTML = '<div class="text-danger fw-bold fs-3">¡EN VIVO AHORA!</div>';
-                            startDraw(sorteoData.participantes);
-                        } else {
-                            const h = String(Math.floor(diff / 3600000)).padStart(2, '0');
-                            const m = String(Math.floor((diff % 3600000) / 60000)).padStart(2, '0');
-                            const s = String(Math.floor((diff % 60000) / 1000)).padStart(2, '0');
-                            countdownElem.innerHTML = `<div class="small fw-bold">Faltan</div><div class="display-1 text-success">\( {h}: \){m}:${s}</div>`;
-                        }
-                    }, 1000);
-                }
-
-            } catch (error) {
-                console.error(error);
-                liveDisplay.innerHTML = '<div class="fs-3 text-muted">No hay sorteo programado en este momento</div><div class="small mt-3">¡Vuelve pronto para el próximo sorteo!</div>';
-            }
-        }
-
-        loadSorteo();
-    </script>
-</body>
-
-</html>
+                    // Mostrar ganador inmediatamente (sin animación completa, pero con estilo ganador)
+                    liveDisplay.innerHTML = `${winnerName || 'Calculando ganador...'}`;
+                    liveDisplay.classList.add('winner');
+                    liveDisplay.innerHTML = `${winnerName}<br><span style="font-size:0
