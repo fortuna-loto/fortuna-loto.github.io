@@ -7,166 +7,6 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
     <style>
-        body {
-            font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            background: linear-gradient(135deg, #e8f5e9 0%, #f0f5f2 100%);
-            color: #1a3a2a;
-            margin: 0;
-            min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-            overflow: hidden;
-        }
-
-        .mobile-header {
-            display: none;
-            background-color: #ffffff;
-            padding: 12px 16px;
-            position: sticky;
-            top: 0;
-            z-index: 1000;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-        }
-
-        .mobile-header .logo-img {
-            height: 60px;
-            width: auto;
-        }
-
-        .mobile-header .qr-btn-group {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-        }
-
-        .mobile-header .qr-img {
-            width: 42px;
-            height: 42px;
-            border-radius: 6px;
-            box-shadow: 0 2px 6px rgba(0,0,0,0.2);
-        }
-
-        .mobile-header .btn {
-            background-color: #18623a;
-            color: #f0f5f2;
-            font-size: 0.85rem;
-            padding: 6px 12px;
-        }
-
-        .main-content {
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            padding: 2rem;
-            text-align: center;
-        }
-
-        .logo-img {
-            width: 160px;
-            margin-bottom: 20px;
-        }
-
-        #liveTitle {
-            font-size: 2.5rem;
-            font-weight: 800;
-            color: #18623a;
-            margin-bottom: 1rem;
-        }
-
-        #livePremio {
-            font-size: 1.8rem;
-            color: #2a8c52;
-            margin-bottom: 2rem;
-            font-weight: 600;
-        }
-
-        #countdown {
-            font-size: 4rem;
-            font-weight: 900;
-            color: #18623a;
-            margin: 2rem 0;
-            letter-spacing: 4px;
-        }
-
-        #liveParticipants {
-            font-size: 1.1rem;
-            max-width: 800px;
-            margin: 1.5rem auto;
-            padding: 1rem;
-            background: rgba(24,98,58,0.08);
-            border-radius: 12px;
-            line-height: 1.6;
-        }
-
-        #liveDisplay {
-            font-size: 4.5rem;
-            font-weight: 900;
-            margin: 2rem 0;
-            min-height: 140px;
-            color: #1a3a2a;
-        }
-
-        .winner {
-            color: #18623a !important;
-            animation: winnerGlow 2s ease-in-out infinite alternate, winnerScale 1.5s ease-out;
-            text-shadow: 
-                0 0 20px rgba(24,98,58,0.6),
-                0 0 40px rgba(42,140,82,0.5),
-                0 0 60px rgba(24,98,58,0.3);
-        }
-
-        @keyframes winnerGlow {
-            from {
-                text-shadow: 
-                    0 0 20px rgba(24,98,58,0.6),
-                    0 0 40px rgba(42,140,82,0.5);
-            }
-            to {
-                text-shadow: 
-                    0 0 40px rgba(24,98,58,0.9),
-                    0 0 80px rgba(42,140,82,0.7),
-                    0 0 120px rgba(24,98,58,0.4);
-            }
-        }
-
-        @keyframes winnerScale {
-            0% { transform: scale(0.8); opacity: 0; }
-            70% { transform: scale(1.1); }
-            100% { transform: scale(1); opacity: 1; }
-        }
-
-        .sorteo-finalizado {
-            font-size: 2.2rem;
-            color: #18623a;
-            margin: 1.5rem 0;
-            font-weight: 700;
-        }
-
-        .fecha-sorteo {
-            font-size: 1.6rem;
-            color: #555;
-            margin-bottom: 2rem;
-            font-style: italic;
-        }
-
-        .ganador-final {
-            font-size: 5rem;
-            font-weight: 900;
-            margin: 2rem 0;
-            min-height: 160px;
-        }
-
-        .qr-section {
-            margin-top: 3rem;
-        }
-
-        .qr-section img {
-            width: 100px;
-            border-radius: 10px;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
-        }
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap');
         body { font-family: 'Inter', system-ui, -apple-system, sans-serif; }
         
@@ -181,82 +21,6 @@
         .glow-effect { box-shadow: 0 0 20px rgba(16, 185, 129, 0.4); animation: glow 2s infinite; }
         @keyframes glow { 0%, 100% { box-shadow: 0 0 20px rgba(255, 255, 255, 0.3); } 50% { box-shadow: 0 0 40px rgba(255, 255, 255, 0.6); } }
 
-        .btn-whatsapp {
-            background-color: #18623a;
-            color: #f0f5f2;
-            margin-top: 1rem;
-            padding: 10px 20px;
-            font-size: 1.1rem;
-            border-radius: 12px;
-        }
-
-        @media (max-width: 992px) {
-            .mobile-header {
-                display: flex;
-                align-items: center;
-                justify-content: space-between;
-            }
-
-            .main-content {
-                padding: 1rem;
-            }
-
-            #liveTitle {
-                font-size: 2rem;
-            }
-
-            #livePremio {
-                font-size: 1.5rem;
-            }
-
-            #countdown {
-                font-size: 3.5rem;
-            }
-
-            #liveDisplay, .ganador-final {
-                font-size: 3.8rem;
-            }
-
-            .sorteo-finalizado {
-                font-size: 1.8rem;
-            }
-
-            .fecha-sorteo {
-                font-size: 1.3rem;
-            }
-
-            .logo-img {
-                width: 140px;
-            }
-
-            .qr-section img {
-                width: 80px;
-            }
-        }
-
-        @media (max-width: 576px) {
-            #liveTitle {
-                font-size: 1.8rem;
-            }
-
-            #countdown {
-                font-size: 3rem;
-                letter-spacing: 2px;
-            }
-
-            #liveDisplay, .ganador-final {
-                font-size: 3.2rem;
-            }
-
-            .mobile-header .logo-img {
-                height: 55px;
-            }
-
-            .mobile-header .qr-img {
-                width: 38px;
-                height: 38px;
-            }
-        }
         .custom-scroll::-webkit-scrollbar { width: 6px; }
         .custom-scroll::-webkit-scrollbar-track { background: #f1f1f1; border-radius: 10px; }
         .custom-scroll::-webkit-scrollbar-thumb { background: #10b981; border-radius: 10px; }
@@ -308,17 +72,6 @@
                 <ul id="prizes-list" class="space-y-2"></ul>
             </div>
         </div>
-    </main>
-
-    <!-- Publicidad sticky -->
-    <div style="position:absolute;z-index:99999">
-        <input type="checkbox" id="aadsstickymjaosk6z" hidden autocomplete="off">
-        <div>
-            <div style="position:fixed;bottom:0;left:0;right:0;width:100%;text-align:center">
-                <label for="aadsstickymjaosk6z" style="position:absolute;top:50%;right:24px;transform:translateY(-50%);background:rgba(248,248,249,0.7);padding:4px;border-radius:4px;cursor:pointer;z-index:99999">
-                    <svg fill="#000" height="16" width="16" viewBox="0 0 490 490"><polygon points="456.851,0 245,212.564 33.149,0 0.708,32.337 212.669,245.004 0.708,457.678 33.149,490 245,277.443 456.851,490 489.292,457.678 277.331,245.004 489.292,32.337"/></svg>
-                </label>
-                <iframe data-aa="2420971" src="//acceptable.a-ads.com/2420971/?size=Adaptive" style="border:0;width:100%;height:auto;overflow:hidden"></iframe>
 
         <!-- Columna Derecha: Participantes y Resultado -->
         <div class="md:col-span-2 flex flex-col gap-6">
@@ -355,20 +108,6 @@
     </main>
 
     <script>
-        const liveTitle = document.getElementById('liveTitle');
-        const livePremio = document.getElementById('livePremio');
-        const countdownElem = document.getElementById('countdown');
-        const liveParticipants = document.getElementById('liveParticipants');
-        const liveDisplay = document.getElementById('liveDisplay');
-        const sorteoFinalizado = document.getElementById('sorteoFinalizado');
-        const fechaSorteo = document.getElementById('fechaSorteo');
-        const winnerAudio = document.getElementById('winnerSound');
-
-        let sorteoData = null;
-        let sorteoInterval = null;
-        let winnerName = null; // Guardamos el ganador para mostrarlo después
-
-        async function getSurinameTime() {
         // CONFIGURACIÓN INTERNA (Solo se usa si falla la carga externa)
         const localBackupConfig = {
             "proximo_sorteo": {
@@ -425,39 +164,6 @@
                 seed = ((seed << 5) - seed) + seedSource.charCodeAt(i);
                 seed |= 0;
             }
-
-            liveDisplay.textContent = '...';
-            liveDisplay.classList.remove('winner');
-
-            Math.seedrandom(sorteoData.hora);
-
-            const winnerIndex = Math.floor(Math.random() * items.length);
-            winnerName = items[winnerIndex]; // Guardamos el ganador
-
-            const totalCycles = 8 + Math.floor(Math.random() * 4);
-            const totalTicks = totalCycles * items.length + winnerIndex;
-            let step = 0;
-
-            const tick = () => {
-                liveDisplay.textContent = items[step % items.length];
-                step++;
-                if (step >= totalTicks) {
-                    liveDisplay.textContent = winnerName;
-                    liveDisplay.classList.add('winner');
-                    setTimeout(() => {
-                        liveDisplay.innerHTML = `${winnerName}<br><span style="font-size:0.7em;opacity:0.9">¡GANADOR!</span>`;
-                        winnerAudio.currentTime = 0;
-                        winnerAudio.play().catch(() => {});
-                        launchConfetti();
-                    }, 600);
-                    return;
-                }
-                const progress = step / totalTicks;
-                const delay = 30 + 250 * (1 - Math.pow(1 - progress, 3));
-                setTimeout(tick, delay);
-            };
-
-            setTimeout(tick, 800);
             document.getElementById('draw-hash').textContent = Math.abs(seed).toString(16).toUpperCase();
             const randomIndex = Math.floor(seededRandom(seed) * participantesList.length);
             return participantesList[randomIndex];
@@ -489,56 +195,6 @@
             roll();
         }
 
-        async function loadSorteo() {
-            if (sorteoInterval) clearInterval(sorteoInterval);
-
-            liveTitle.textContent = '';
-            livePremio.textContent = '';
-            countdownElem.innerHTML = '';
-            liveParticipants.innerHTML = '';
-            liveDisplay.textContent = 'Cargando sorteo...';
-            sorteoFinalizado.style.display = 'none';
-            fechaSorteo.style.display = 'none';
-
-            try {
-                const res = await fetch('sorteo.json?t=' + Date.now());
-                if (!res.ok) throw new Error();
-                sorteoData = await res.json();
-
-                if (!sorteoData.hora || !Array.isArray(sorteoData.participantes) || sorteoData.participantes.length < 2) throw new Error();
-
-                const sorteoTime = new Date(sorteoData.hora);
-
-                if (sorteoData.titulo) liveTitle.textContent = sorteoData.titulo;
-                if (sorteoData.premio) livePremio.textContent = sorteoData.premio;
-
-                const countSpan = document.createElement('strong');
-                countSpan.textContent = `${sorteoData.participantes.length} participantes`;
-                const listSpan = document.createElement('small');
-                listSpan.textContent = sorteoData.participantes.join(' • ');
-
-                liveParticipants.innerHTML = '';
-                liveParticipants.appendChild(countSpan);
-                liveParticipants.appendChild(document.createElement('br'));
-                liveParticipants.appendChild(listSpan);
-
-                const initialTime = await getSurinameTime();
-                const initialDiff = sorteoTime - initialTime;
-
-                if (initialDiff <= 0) {
-                    // Sorteo ya finalizado
-                    countdownElem.innerHTML = '';
-                    sorteoFinalizado.textContent = '¡Sorteo Finalizado!';
-                    sorteoFinalizado.style.display = 'block';
-
-                    const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit', timeZone: 'America/Paramaribo' };
-                    fechaSorteo.textContent = `Realizado el ${sorteoTime.toLocaleDateString('es-ES', options)} (hora de Suriname)`;
-                    fechaSorteo.style.display = 'block';
-
-                    // Mostrar ganador inmediatamente (sin animación completa, pero con estilo ganador)
-                    liveDisplay.innerHTML = `${winnerName || 'Calculando ganador...'}`;
-                    liveDisplay.classList.add('winner');
-                    liveDisplay.innerHTML = `${winnerName}<br><span style="font-size:0
         function finishDraw() {
             rollingNameDisplay.textContent = finalWinner;
             document.getElementById('winner-icon').textContent = "👑";
