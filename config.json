@@ -1,0 +1,16 @@
+{
+  "proximo_sorteo": {
+    "fecha": "2024-12-18",
+    "hora": "19:40:00",
+    "zona_horaria": "America/Paramaribo",
+    "nombre_evento": "SORTEO FORTUNA OFICIAL"
+  },
+  "premios": [
+    {
+      "puesto": 1,
+      "desc": "Premio Mayor: $25,000",
+      "icono": "💰"
+    }
+  ],
+  "participantes_raw": "Daniel_E, +5977479759, +5971234567, User_A, User_B, +597999999, Invitado_01, Fortuna_Fan"
+}
