@@ -7,10 +7,8 @@
     <title>Fortuna</title>
     <link rel="icon" type="image/x-icon" href="src/favicon.ico">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <!-- Bootstrap Icons -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/dist/confetti.browser.min.js"></script>
-    <!-- SeedRandom para sorteo determinístico -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/seedrandom/3.0.5/seedrandom.min.js"></script>
     <style>
         body {
@@ -40,13 +38,13 @@
         .nav-tabs .nav-link {
             font-weight: 600;
             color: #18623a;
-            padding: 10px 20px;
-            font-size: 1.1rem;
+            padding: 8px 16px;
+            font-size: 1rem;
         }
 
         .nav-tabs .nav-link i {
-            font-size: 1.4rem;
-            margin-right: 8px;
+            font-size: 1.3rem;
+            margin-right: 6px;
             vertical-align: middle;
         }
 
@@ -59,19 +57,19 @@
         .tab-pane {
             background: linear-gradient(135deg, #f8f9fa 0%, #ffffff 100%);
             border-radius: 16px;
-            padding: 1.5rem;
+            padding: 1.2rem;
             box-shadow: 0 6px 20px rgba(24, 98, 58, 0.15);
             height: 480px;
             display: flex;
             flex-direction: column;
             justify-content: center;
-            overflow-y: auto;
+            overflow: hidden;
         }
 
         #display {
-            font-size: 48px;
+            font-size: 46px;
             font-weight: 700;
-            margin: 20px 0;
+            margin: 15px 0;
             min-height: 70px;
         }
 
@@ -88,16 +86,16 @@
         .dice-container {
             display: flex;
             justify-content: center;
-            gap: 30px;
+            gap: 25px;
             flex-wrap: wrap;
-            margin: 20px 0;
+            margin: 15px 0;
             perspective: 1000px;
         }
 
         .dice {
-            font-size: 100px;
-            width: 140px;
-            height: 140px;
+            font-size: 90px;
+            width: 130px;
+            height: 130px;
             background: linear-gradient(145deg, #ffffff, #f0f0f0);
             border-radius: 20px;
             box-shadow: 
@@ -124,48 +122,62 @@
         }
 
         #diceResult {
-            font-size: 40px;
+            font-size: 36px;
             font-weight: bold;
             color: #18623a;
             min-height: 50px;
         }
 
-        /* Estilos para Sorteo en Vivo */
+        /* Pestaña En Vivo */
+        #liveTitle {
+            font-size: 24px;
+            font-weight: bold;
+            margin-bottom: 8px;
+        }
+
+        #livePremio {
+            font-size: 20px;
+            color: #18623a;
+            margin-bottom: 12px;
+        }
+
         #countdown {
-            font-size: 48px;
+            font-size: 44px;
             font-weight: bold;
             color: #18623a;
-            margin: 20px 0;
+            margin: 10px 0;
         }
 
         #liveParticipants {
-            max-height: 150px;
+            font-size: 14px;
+            max-height: 80px;
             overflow-y: auto;
-            margin-bottom: 20px;
-            padding: 10px;
-            background: #f8f9fa;
+            margin: 10px 0;
+            padding: 8px;
+            background: rgba(24,98,58,0.05);
             border-radius: 8px;
         }
 
         #liveDisplay {
-            font-size: 48px;
+            font-size: 46px;
             font-weight: 700;
-            margin: 20px 0;
+            margin: 15px 0;
             min-height: 70px;
         }
 
         @media (max-width: 992px) {
-            .main-container { align-items: flex-start; padding-top: 1.5rem; }
-            .tab-pane { height: auto; min-height: 400px; padding: 1rem; }
+            .main-container { align-items: flex-start; padding-top: 1rem; }
+            .tab-pane { height: auto; min-height: 380px; padding: 1rem; }
         }
 
         @media (max-width: 768px) {
             .logo-img { width: 140px; }
-            #display, #liveDisplay, #countdown { font-size: 38px; }
-            .dice { font-size: 80px; width: 110px; height: 110px; }
-            #diceResult { font-size: 32px; }
-            .nav-tabs .nav-link { font-size: 1rem; padding: 8px 12px; }
-            .nav-tabs .nav-link i { font-size: 1.2rem; }
+            #display, #liveDisplay, #countdown { font-size: 36px; }
+            .dice { font-size: 70px; width: 100px; height: 100px; }
+            #diceResult { font-size: 28px; }
+            #liveTitle { font-size: 20px; }
+            #livePremio { font-size: 18px; }
+            #liveParticipants { font-size: 13px; }
         }
     </style>
 </head>
@@ -174,7 +186,6 @@
     <div class="main-container">
         <div class="container">
             <div class="row justify-content-center align-items-center g-4">
-                <!-- Columna izquierda: Logo y contacto -->
                 <div class="col-lg-4 col-md-5 text-center">
                     <img src="src/fortuna_logo.png" alt="Logo Fortuna" class="logo-img">
                     <h3 class="text-success mb-3">Loto</h3>
@@ -189,11 +200,15 @@
                     </div>
                 </div>
 
-                <!-- Columna derecha: Pestañas con iconos -->
                 <div class="col-lg-6 col-md-7">
                     <ul class="nav nav-tabs mb-3 justify-content-center" id="myTab" role="tablist">
                         <li class="nav-item" role="presentation">
-                            <button class="nav-link active" id="sorteo-tab" data-bs-toggle="tab" data-bs-target="#sorteo" type="button">
+                            <button class="nav-link active" id="live-tab" data-bs-toggle="tab" data-bs-target="#live" type="button">
+                                <i class="bi bi-broadcast"></i> En Vivo
+                            </button>
+                        </li>
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link" id="sorteo-tab" data-bs-toggle="tab" data-bs-target="#sorteo" type="button">
                                 <i class="bi bi-ticket-perforated"></i> Sorteo
                             </button>
                         </li>
@@ -202,30 +217,33 @@
                                 <i class="bi bi-dice-6"></i> Dados
                             </button>
                         </li>
-                        <li class="nav-item" role="presentation">
-                            <button class="nav-link" id="live-tab" data-bs-toggle="tab" data-bs-target="#live" type="button">
-                                <i class="bi bi-broadcast"></i> En Vivo
-                            </button>
-                        </li>
                     </ul>
 
                     <div class="tab-content">
-                        <!-- Pestaña Sorteo -->
-                        <div class="tab-pane fade show active" id="sorteo" role="tabpanel">
+                        <div class="tab-pane fade show active" id="live" role="tabpanel">
+                            <div class="text-center">
+                                <div id="liveTitle"></div>
+                                <div id="livePremio"></div>
+                                <div id="countdown"></div>
+                                <div id="liveParticipants"></div>
+                                <div id="liveDisplay">Esperando sorteo...</div>
+                            </div>
+                        </div>
+
+                        <div class="tab-pane fade" id="sorteo" role="tabpanel">
                             <p class="text-center mb-3 small">Participantes (comas o saltos de línea)</p>
                             <textarea id="list" class="form-control mb-2" rows="4"
                                 placeholder="Ana, Luis, María..."></textarea>
                             <div class="text-success fw-bold mb-3 text-center" id="countDisplay">0 participantes</div>
 
                             <div class="d-flex gap-2 justify-content-center flex-wrap mb-3">
-                                <button onclick="startDraw()" id="drawButton" class="btn btn-success">Iniciar sorteo</button>
+                                <button onclick="manualDraw()" id="drawButton" class="btn btn-success">Iniciar sorteo</button>
                                 <button onclick="clearList()" class="btn btn-outline-secondary">Borrar</button>
                             </div>
 
                             <div id="display" class="text-center">• • •</div>
                         </div>
 
-                        <!-- Pestaña Dados -->
                         <div class="tab-pane fade" id="dados" role="tabpanel">
                             <h5 class="text-center mb-3">Lanza los dados</h5>
                             <div class="btn-group mb-3" role="group">
@@ -238,24 +256,12 @@
 
                             <div id="diceResult" class="text-center">¡Elige cuántos!</div>
                         </div>
-
-                        <!-- Pestaña Sorteo en Vivo -->
-                        <div class="tab-pane fade" id="live" role="tabpanel">
-                            <div class="text-center">
-                                <h5 class="mb-3">Sorteo en Vivo</h5>
-                                <div id="liveStatus" class="mb-3">Cargando datos del sorteo...</div>
-                                <div id="countdown" class="mb-3"></div>
-                                <div id="liveParticipants" class="small text-muted mb-3">Participantes: Cargando...</div>
-                                <div id="liveDisplay" class="text-center">Esperando sorteo...</div>
-                            </div>
-                        </div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- Publicidad sticky -->
     <div style="position: absolute; z-index: 99999">
         <input autocomplete="off" type="checkbox" id="aadsstickymjaosk6z" hidden />
         <div>
@@ -273,7 +279,6 @@
         </div>
     </div>
 
-    <!-- Audios -->
     <audio id="winnerSound" preload="auto">
         <source src="src/winner-game-sound-404167.mp3" type="audio/mpeg">
     </audio>
@@ -315,13 +320,20 @@
         }
 
         function startDraw(items, displayElem, isLive = false) {
-            if (items.length < 2) return alert('Mínimo 2 participantes');
+            if (items.length < 2) {
+                displayElem.innerText = 'Mínimo 2 participantes';
+                return;
+            }
 
             displayElem.innerText = '...';
             displayElem.classList.remove('winner');
 
-            // Semilla determinística basada en la fecha del sorteo para que sea igual en todos
-            const seed = new Date().toISOString().slice(0,10); // YYYY-MM-DD
+            let seed;
+            if (isLive && sorteoData && sorteoData.hora) {
+                seed = sorteoData.hora; // Semilla única por sorteo: la hora exacta
+            } else {
+                seed = new Date().toISOString(); // Manual: hora actual
+            }
             Math.seedrandom(seed);
 
             const winnerIndex = Math.floor(Math.random() * items.length);
@@ -340,8 +352,10 @@
                         winnerAudio.currentTime = 0;
                         winnerAudio.play().catch(() => {});
                         launchConfetti();
-                        if (!isLive) drawButton.textContent = 'Nuevo sorteo';
-                        if (!isLive) drawButton.disabled = false;
+                        if (!isLive) {
+                            drawButton.textContent = 'Nuevo sorteo';
+                            drawButton.disabled = false;
+                        }
                     }, 500);
                     return;
                 }
@@ -353,7 +367,6 @@
             setTimeout(tick, 600);
         }
 
-        // Para sorteo manual
         function manualDraw() {
             const text = listInput.value.trim();
             const items = text.split(/\r?\n|,/).map(s => s.trim()).filter(s => s !== '');
@@ -398,52 +411,83 @@
         }
 
         // === SORTEO EN VIVO ===
-        const liveStatus = document.getElementById('liveStatus');
+        const liveTitle = document.getElementById('liveTitle');
+        const livePremio = document.getElementById('livePremio');
         const countdownElem = document.getElementById('countdown');
         const liveParticipants = document.getElementById('liveParticipants');
         const liveDisplay = document.getElementById('liveDisplay');
 
+        let sorteoData = null;
+        let sorteoInterval = null;
+
         async function loadLiveSorteo() {
+            if (sorteoInterval) {
+                clearInterval(sorteoInterval);
+                sorteoInterval = null;
+            }
+
+            liveTitle.innerHTML = '';
+            livePremio.innerHTML = '';
+            countdownElem.innerHTML = '';
+            liveParticipants.innerHTML = '';
+            liveDisplay.innerText = 'Cargando...';
+
             try {
-                const response = await fetch('sorteo.json');
-                if (!response.ok) throw new Error('No hay sorteo disponible');
-                const data = await response.json();
+                const response = await fetch('sorteo.json?t=' + Date.now());
+                if (!response.ok) throw new Error('No encontrado');
 
-                liveParticipants.textContent = `Participantes: ${data.participantes.length} (${data.participantes.join(', ')})`;
+                sorteoData = await response.json();
 
-                const sorteoTime = new Date(data.hora);
-                const tzOffset = -3 * 60 * 60 * 1000; // UTC-3 para Suriname
-                const localTime = new Date();
-                const surinameTime = new Date(localTime.getTime() + (localTime.getTimezoneOffset() * 60000) + tzOffset);
+                if (!sorteoData.hora || !Array.isArray(sorteoData.participantes) || sorteoData.participantes.length < 2) {
+                    throw new Error('Datos inválidos');
+                }
 
-                let interval = setInterval(() => {
-                    const diff = sorteoTime - surinameTime;
-                    if (diff <= 0) {
-                        clearInterval(interval);
-                        countdownElem.innerText = '¡Sorteo en curso!';
-                        startDraw(data.participantes, liveDisplay, true);
-                    } else {
-                        const hours = Math.floor(diff / 3600000);
-                        const mins = Math.floor((diff % 3600000) / 60000);
-                        const secs = Math.floor((diff % 60000) / 1000);
-                        countdownElem.innerText = `${hours}h ${mins}m ${secs}s`;
-                    }
-                }, 1000);
+                const sorteoTime = new Date(sorteoData.hora);
+                const getSurinameTime = () => {
+                    const now = new Date();
+                    const utc = now.getTime() + (now.getTimezoneOffset() * 60000);
+                    return new Date(utc + (-3 * 3600000));
+                };
+                const nowSuriname = getSurinameTime();
 
-                liveStatus.textContent = 'Sorteo programado para ' + sorteoTime.toLocaleString('es-ES', { timeZone: 'America/Paramaribo' });
+                // Mostrar título y premio
+                if (sorteoData.titulo) liveTitle.innerHTML = `<strong>${sorteoData.titulo}</strong>`;
+                if (sorteoData.premio) livePremio.innerHTML = `<strong>Premio:</strong> ${sorteoData.premio}`;
+
+                liveParticipants.innerHTML = `<strong>${sorteoData.participantes.length} participantes</strong><br><small>${sorteoData.participantes.join(', ')}</small>`;
+
+                if (sorteoTime <= nowSuriname) {
+                    // Sorteo ya pasó → mostrar ganador inmediatamente
+                    countdownElem.innerHTML = '<span class="text-muted">Sorteo finalizado</span>';
+                    startDraw(sorteoData.participantes, liveDisplay, true);
+                } else {
+                    // Conteo regresivo
+                    sorteoInterval = setInterval(() => {
+                        const nowSuriname = getSurinameTime();
+                        const diff = sorteoTime - nowSuriname;
+
+                        if (diff <= 0) {
+                            clearInterval(sorteoInterval);
+                            sorteoInterval = null;
+                            countdownElem.innerHTML = '<span class="text-danger fw-bold">¡EN VIVO AHORA!</span>';
+                            startDraw(sorteoData.participantes, liveDisplay, true);
+                        } else {
+                            const hours = Math.floor(diff / 3600000).toString().padStart(2, '0');
+                            const minutes = Math.floor((diff % 3600000) / 60000).toString().padStart(2, '0');
+                            const seconds = Math.floor((diff % 60000) / 1000).toString().padStart(2, '0');
+                            countdownElem.innerHTML = `<div class="fw-bold small">Faltan</div><div class="display-5 text-success">${hours}:${minutes}:${seconds}</div>`;
+                        }
+                    }, 1000);
+                }
+
             } catch (error) {
-                liveStatus.textContent = 'No hay sorteo disponible este domingo.';
-                countdownElem.innerText = '';
-                liveParticipants.textContent = '';
-                liveDisplay.innerText = 'Esperando datos...';
+                liveDisplay.innerHTML = '<div class="text-muted fs-4">No hay sorteo programado en este momento</div><div class="small">¡Vuelve pronto!</div>';
             }
         }
 
-        // Cargar sorteo en vivo cuando se abre la pestaña
-        const liveTabButton = document.getElementById('live-tab');
-        liveTabButton.addEventListener('shown.bs.tab', loadLiveSorteo);
+        document.getElementById('live-tab').addEventListener('shown.bs.tab', loadLiveSorteo);
+        loadLiveSorteo(); // Cargar al inicio
 
-        // Inicializar sorteo manual
         listInput.dispatchEvent(new Event('input'));
     </script>
 </body>
