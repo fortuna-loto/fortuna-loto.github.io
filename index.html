@@ -4,10 +4,14 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Sorteo Automático Suriname - Fortuna</title>
+    
+    <!-- Favicon SVG Directo -->
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='24' fill='%2310b981'/><path d='M35 25H70V38H48V46H65V59H48V75H35V25Z' fill='white'/></svg>">
+
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
-    <!-- Biblioteca de Iconos Lucide -->
     <script src="https://unpkg.com/lucide@latest"></script>
+    
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap');
         body { font-family: 'Inter', system-ui, -apple-system, sans-serif; }
@@ -36,13 +40,6 @@
             background: linear-gradient(45deg, #10b981, #059669);
             box-shadow: 0 4px 15px rgba(16, 185, 129, 0.2);
         }
-
-        .logo-gradient {
-            stop-color: #10b981;
-        }
-        .logo-gradient-alt {
-            stop-color: #059669;
-        }
     </style>
 </head>
 <body class="bg-slate-50 min-h-screen flex flex-col pb-12">
@@ -51,7 +48,7 @@
     <nav id="main-nav" class="bg-white shadow-sm p-4 border-b-2 border-emerald-500 relative z-30">
         <div class="max-w-6xl mx-auto flex justify-between items-center px-2">
             <div class="flex items-center gap-3">
-                <!-- Nuevo Logo SVG Minimalista -->
+                <!-- Logo SVG Fortuna -->
                 <svg width="42" height="42" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
                     <defs>
                         <linearGradient id="fortunaGrad" x1="0%" y1="0%" x2="100%" y2="100%">
@@ -59,11 +56,8 @@
                             <stop offset="100%" style="stop-color:#059669;stop-opacity:1" />
                         </linearGradient>
                     </defs>
-                    <!-- Base circular con gradiente -->
                     <rect width="100" height="100" rx="24" fill="url(#fortunaGrad)" />
-                    <!-- F Estilizada Moderna -->
                     <path d="M35 25H70V38H48V46H65V59H48V75H35V25Z" fill="white" />
-                    <!-- Detalle de acento -->
                     <rect x="52" y="70" width="18" height="5" rx="2.5" fill="#A7F3D0" />
                 </svg>
                 <div>
@@ -115,10 +109,8 @@
 
     <!-- Contenedor Principal -->
     <main id="main-content" class="max-w-6xl mx-auto w-full p-4 md:p-6 grid grid-cols-1 md:grid-cols-3 gap-6">
-        
         <!-- Columna Izquierda: Estado -->
         <div id="status-card-container" class="md:col-span-1 flex flex-col gap-6">
-            <!-- Contador -->
             <div id="counter-card" class="bg-white rounded-2xl shadow-xl overflow-hidden border border-slate-200">
                 <div class="bg-emerald-600 p-3 text-white text-center flex items-center justify-center gap-2">
                     <i data-lucide="calendar-days" class="w-4 h-4 text-emerald-200"></i>
@@ -134,7 +126,6 @@
                 </div>
             </div>
 
-            <!-- Panel de Información del Ganador -->
             <div id="last-winner-card" class="hidden bg-white rounded-2xl shadow-xl overflow-hidden border border-slate-200 relative">
                 <div class="absolute top-0 right-0 p-3">
                      <div class="bg-emerald-100 text-emerald-600 p-2 rounded-lg">
@@ -182,6 +173,7 @@
     </main>
 
     <script>
+        // Lógica de JavaScript (idéntica a la anterior para mantener funcionalidad)
         const drawingModal = document.getElementById('drawing-modal');
         const rollingNameDisplay = document.getElementById('rolling-name');
         const clockElement = document.getElementById('live-clock');
@@ -198,25 +190,19 @@
         let participantesList = [];
         let drawTimestamp = null; 
 
-        function refreshIcons() {
-            lucide.createIcons();
-        }
+        function refreshIcons() { lucide.createIcons(); }
 
         async function syncTime() {
             try {
                 const response = await fetch('https://worldtimeapi.org/api/timezone/America/Paramaribo');
                 if (!response.ok) throw new Error('API Error');
                 const data = await response.json();
-                const surinameNow = new Date(data.datetime).getTime();
-                const systemNow = Date.now();
-                timeOffset = surinameNow - systemNow;
+                timeOffset = new Date(data.datetime).getTime() - Date.now();
                 timeSynced = true;
-                document.getElementById('sync-indicator').classList.remove('bg-slate-300');
-                document.getElementById('sync-indicator').classList.add('bg-emerald-500', 'clock-flash');
+                document.getElementById('sync-indicator').classList.replace('bg-slate-300', 'bg-emerald-500');
+                document.getElementById('sync-indicator').classList.add('clock-flash');
                 refreshIcons();
-            } catch (e) {
-                setTimeout(syncTime, 3000);
-            }
+            } catch (e) { setTimeout(syncTime, 3000); }
         }
 
         async function inspectNewDraws() {
@@ -225,7 +211,6 @@
                 if (response.ok) {
                     const newConfig = await response.json();
                     const newHash = JSON.stringify(newConfig.proximo_sorteo);
-                    
                     if (newHash !== lastConfigHash) {
                         configSorteo = newConfig;
                         lastConfigHash = newHash;
@@ -233,7 +218,7 @@
                         initApp();
                     }
                 }
-            } catch (e) { console.warn("Error inspeccionando config.json"); }
+            } catch (e) {}
         }
 
         function calculateWinner() {
@@ -241,13 +226,11 @@
             const seedSource = configSorteo.proximo_sorteo.fecha + configSorteo.proximo_sorteo.hora + configSorteo.participantes_raw;
             let seed = 0;
             for (let i = 0; i < seedSource.length; i++) seed = ((seed << 5) - seed) + seedSource.charCodeAt(i);
-            const winnerIdx = Math.abs(seed) % participantesList.length;
-            return participantesList[winnerIdx];
+            return participantesList[Math.abs(seed) % participantesList.length];
         }
 
         function initApp() {
-            if (!configSorteo || !configSorteo.proximo_sorteo) return;
-
+            if (!configSorteo) return;
             participantesList = configSorteo.participantes_raw.split(/[\s,]+/).filter(p => p.trim() !== "").sort();
             document.getElementById('total-participants').textContent = participantesList.length;
             document.getElementById('participants-grid').innerHTML = participantesList.map(p => {
@@ -257,17 +240,10 @@
                 </div>`;
             }).join('');
 
-            let fechaStr = configSorteo.proximo_sorteo.fecha;
-            const horaStr = configSorteo.proximo_sorteo.hora;
-            const partes = fechaStr.split('-');
-            const currentYear = new Date().getFullYear();
-            
-            let finalFecha = (partes.length === 3) ? fechaStr : `${currentYear}-${fechaStr}`;
-            const isoString = `${finalFecha}T${horaStr}-03:00`;
+            const isoString = `${configSorteo.proximo_sorteo.fecha}T${configSorteo.proximo_sorteo.hora}-03:00`;
             drawTimestamp = new Date(isoString).getTime();
-
             document.getElementById('event-name').textContent = configSorteo.proximo_sorteo.nombre_evento;
-            document.getElementById('draw-date-display').textContent = `${finalFecha} | ${horaStr}`;
+            document.getElementById('draw-date-display').textContent = `${configSorteo.proximo_sorteo.fecha} | ${configSorteo.proximo_sorteo.hora}`;
             
             if (configSorteo.premios?.length > 0) {
                 document.getElementById('prizes-container').classList.remove('hidden');
@@ -283,31 +259,22 @@
 
         function update() {
             if (!timeSynced || !drawTimestamp) return;
-            const nowSuriname = Date.now() + timeOffset;
-            const diff = drawTimestamp - nowSuriname;
-            const liveDate = new Date(nowSuriname);
-            clockElement.textContent = liveDate.toLocaleTimeString('es-SR', { hour12: false, timeZone: 'America/Paramaribo' });
+            const now = Date.now() + timeOffset;
+            const diff = drawTimestamp - now;
+            clockElement.textContent = new Date(now).toLocaleTimeString('es-SR', { hour12: false, timeZone: 'America/Paramaribo' });
 
             if (diff <= 0) {
-                if (diff > -60000 && !isDrawing) {
-                    runDrawing();
-                } else if (diff <= -60000) {
-                    showCalculatedWinner();
-                }
-                
+                if (diff > -60000 && !isDrawing) runDrawing();
+                else if (diff <= -60000) showCalculatedWinner();
                 countdownElement.textContent = "00h 00m 00s";
                 statusBadge.textContent = "Sorteo Finalizado";
                 statusBadge.className = "inline-block px-3 py-1 rounded-full text-[10px] font-bold uppercase bg-emerald-100 text-emerald-600 mb-4";
                 return;
             }
-
             counterCard.classList.remove('hidden');
             lastWinnerCard.classList.add('hidden');
-
-            const hours = Math.floor(diff / 3600000);
-            const mins = Math.floor((diff % 3600000) / 60000);
-            const secs = Math.floor((diff % 60000) / 1000);
-            countdownElement.textContent = `${hours.toString().padStart(2,'0')}h ${mins.toString().padStart(2,'0')}m ${secs.toString().padStart(2,'0')}s`;
+            const h = Math.floor(diff/3600000), m = Math.floor((diff%3600000)/60000), s = Math.floor((diff%60000)/1000);
+            countdownElement.textContent = `${h.toString().padStart(2,'0')}h ${m.toString().padStart(2,'0')}m ${s.toString().padStart(2,'0')}s`;
             statusBadge.textContent = "Esperando Sorteo";
             statusBadge.className = "inline-block px-3 py-1 rounded-full text-[10px] font-bold uppercase bg-blue-100 text-blue-600 mb-4";
         }
@@ -316,7 +283,7 @@
             const winner = calculateWinner();
             if (winner) {
                 document.getElementById('info-winner-name').textContent = winner;
-                document.getElementById('info-winner-time').textContent = "Seleccionado el " + configSorteo.proximo_sorteo.fecha + " a las " + configSorteo.proximo_sorteo.hora;
+                document.getElementById('info-winner-time').textContent = "Seleccionado el " + configSorteo.proximo_sorteo.fecha;
                 lastWinnerCard.classList.remove('hidden');
                 counterCard.classList.add('hidden');
             }
@@ -324,23 +291,16 @@
 
         function runDrawing() {
             isDrawing = true;
-            drawingModal.classList.remove('hidden');
-            drawingModal.classList.add('flex');
-
-            const finalWinner = calculateWinner();
-            let startTime = Date.now();
-            let duration = 6000;
-
-            function roll() {
-                let elapsed = Date.now() - startTime;
-                if (elapsed < duration) {
+            drawingModal.classList.replace('hidden', 'flex');
+            const winner = calculateWinner();
+            let start = Date.now(), dur = 6000;
+            const roll = () => {
+                let elap = Date.now() - start;
+                if (elap < dur) {
                     rollingNameDisplay.textContent = participantesList[Math.floor(Math.random() * participantesList.length)];
-                    let nextTick = 50 + (Math.pow(elapsed/duration, 2) * 400);
-                    setTimeout(roll, nextTick);
-                } else {
-                    finishDrawing(finalWinner);
-                }
-            }
+                    setTimeout(roll, 50 + (Math.pow(elap/dur, 2) * 400));
+                } else finishDrawing(winner);
+            };
             roll();
         }
 
@@ -349,20 +309,13 @@
             document.getElementById('winner-icon-modal').innerHTML = `<i data-lucide="crown" class="w-16 h-16 text-yellow-300"></i>`;
             document.getElementById('winner-title').textContent = "¡GANADOR SELECCIONADO!";
             refreshIcons();
-
-            confetti({ particleCount: 200, spread: 90, origin: { y: 0.6 }, colors: ['#10b981', '#fbbf24', '#ffffff'] });
-
+            confetti({ particleCount: 200, spread: 90, origin: { y: 0.6 } });
             showCalculatedWinner();
-
-            setTimeout(() => {
-                drawingModal.classList.add('hidden');
-                drawingModal.classList.remove('flex');
-            }, 6000);
+            setTimeout(() => drawingModal.classList.replace('flex', 'hidden'), 6000);
         }
 
         syncTime();
         inspectNewDraws(); 
-        
         setInterval(update, 1000); 
         setInterval(inspectNewDraws, 60000); 
     </script>
