@@ -6,6 +6,8 @@
     <title>Sorteo Automático Suriname - Fortuna</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <!-- Biblioteca de Iconos Lucide -->
+    <script src="https://unpkg.com/lucide@latest"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap');
         body { font-family: 'Inter', system-ui, -apple-system, sans-serif; }
@@ -13,270 +15,340 @@
         .clock-flash { animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite; }
         @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: .7; } }
         
-        /* Animación de entrada para el panel */
-        .winner-anim { animation: winnerShow 0.8s cubic-bezier(0.34, 1.56, 0.64, 1) forwards; }
-        @keyframes winnerShow { 0% { transform: scale(0.9); opacity: 0; } 100% { transform: scale(1); opacity: 1; } }
+        .modal-enter { animation: modalFadeIn 0.4s ease-out forwards; }
+        @keyframes modalFadeIn { from { opacity: 0; transform: scale(0.95); } to { opacity: 1; transform: scale(1); } }
 
-        /* Efecto de brillo para el nombre ganador */
-        .glow-effect { box-shadow: 0 0 20px rgba(16, 185, 129, 0.4); animation: glow 2s infinite; }
-        @keyframes glow { 0%, 100% { box-shadow: 0 0 20px rgba(255, 255, 255, 0.3); } 50% { box-shadow: 0 0 40px rgba(255, 255, 255, 0.6); } }
+        .glow-effect { box-shadow: 0 0 30px rgba(255, 255, 255, 0.3); }
 
         .custom-scroll::-webkit-scrollbar { width: 6px; }
         .custom-scroll::-webkit-scrollbar-track { background: #f1f1f1; border-radius: 10px; }
         .custom-scroll::-webkit-scrollbar-thumb { background: #10b981; border-radius: 10px; }
+
+        #floating-clock {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            z-index: 40;
+            transition: all 0.3s ease;
+        }
+
+        .winner-tag {
+            background: linear-gradient(45deg, #10b981, #059669);
+            box-shadow: 0 4px 15px rgba(16, 185, 129, 0.2);
+        }
     </style>
 </head>
 <body class="bg-slate-50 min-h-screen flex flex-col pb-12">
 
-    <!-- Navegación con Logo -->
-    <nav class="bg-white shadow-sm p-3 border-b-2 border-emerald-500 sticky top-0 z-50">
+    <!-- Navegación Estática -->
+    <nav id="main-nav" class="bg-white shadow-sm p-4 border-b-2 border-emerald-500 relative z-30">
         <div class="max-w-6xl mx-auto flex justify-between items-center px-2">
             <div class="flex items-center gap-3">
                 <img src="src/logo.png" alt="Fortuna Logo" class="h-10 w-auto" onerror="this.src='https://via.placeholder.com/40x40?text=F'">
-                <div class="hidden sm:block">
+                <div>
                     <h1 class="text-lg font-extrabold text-slate-800 leading-none uppercase tracking-tighter">Fortuna</h1>
                     <span class="text-[10px] text-emerald-600 font-bold uppercase tracking-widest">Sorteo Oficial</span>
                 </div>
             </div>
             
-            <div id="clock-container" class="bg-emerald-50 px-3 py-1.5 rounded-lg border border-emerald-100 flex items-center gap-3">
-                <div class="flex flex-col items-end">
-                    <span class="text-[9px] uppercase tracking-widest text-emerald-600 font-bold leading-none">Hora Suriname</span>
-                    <span id="live-clock" class="text-base font-mono font-bold text-slate-800 leading-none">00:00:00</span>
-                </div>
-                <div id="sync-indicator" class="w-2 h-2 rounded-full bg-emerald-500 clock-flash"></div>
+            <div class="hidden sm:flex items-center gap-2 text-slate-400">
+                <i data-lucide="shield-check" class="w-4 h-4"></i>
+                <span class="text-[10px] font-bold uppercase tracking-widest">Sistema Automatizado Verificado</span>
             </div>
         </div>
     </nav>
 
-    <main class="max-w-6xl mx-auto w-full p-4 md:p-6 grid grid-cols-1 md:grid-cols-3 gap-6">
+    <!-- Reloj Flotante -->
+    <div id="floating-clock" class="bg-white/90 backdrop-blur-md shadow-2xl p-4 rounded-2xl border border-emerald-100 flex items-center gap-4 ring-4 ring-emerald-500/10">
+        <div class="bg-emerald-500 p-2 rounded-xl text-white">
+            <i data-lucide="clock" class="w-5 h-5"></i>
+        </div>
+        <div class="flex flex-col items-end">
+            <span class="text-[9px] uppercase tracking-widest text-emerald-600 font-bold leading-none mb-1">Hora Suriname</span>
+            <span id="live-clock" class="text-xl font-mono font-black text-slate-800 leading-none tracking-tighter">00:00:00</span>
+        </div>
+        <div id="sync-indicator" class="w-3 h-3 rounded-full bg-slate-300 shadow-inner"></div>
+    </div>
+
+    <!-- Modal de Sorteo -->
+    <div id="drawing-modal" class="fixed inset-0 z-[100] hidden items-center justify-center p-4 bg-slate-900/90 backdrop-blur-sm">
+        <div class="bg-emerald-600 w-full max-w-2xl rounded-3xl shadow-2xl p-8 md:p-12 text-white text-center modal-enter border-b-8 border-emerald-800 relative overflow-hidden">
+            <div class="relative z-10">
+                <div id="winner-icon-modal" class="mb-6 flex justify-center">
+                    <i data-lucide="loader-2" class="w-16 h-16 animate-spin text-emerald-200"></i>
+                </div>
+                <h2 id="winner-title" class="text-3xl font-black mb-2 uppercase italic tracking-tight">¡SORTEANDO!</h2>
+                <p id="winner-subtitle" class="text-emerald-100 mb-8 text-sm opacity-90 uppercase tracking-widest font-semibold">Buscando al afortunado...</p>
+                
+                <div class="min-w-[280px] text-3xl md:text-5xl font-mono font-bold bg-white text-emerald-700 py-8 px-10 rounded-2xl inline-block shadow-2xl border-4 border-emerald-300 glow-effect">
+                    <span id="rolling-name">---</span>
+                </div>
+                
+                <div class="mt-10 flex items-center justify-center gap-2 text-[10px] text-emerald-200 uppercase tracking-[0.3em] font-bold">
+                    <i data-lucide="cpu" class="w-4 h-4"></i>
+                    Algoritmo de Selección Fortuna
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Contenedor Principal -->
+    <main id="main-content" class="max-w-6xl mx-auto w-full p-4 md:p-6 grid grid-cols-1 md:grid-cols-3 gap-6">
         
-        <!-- Columna Izquierda: Status -->
-        <div class="md:col-span-1 flex flex-col gap-6">
-            <div class="bg-white rounded-2xl shadow-xl overflow-hidden border border-slate-200">
-                <div class="bg-emerald-600 p-3 text-white text-center">
-                    <h3 id="event-name" class="font-bold uppercase tracking-widest text-xs italic">Estado del Evento</h3>
+        <!-- Columna Izquierda: Estado -->
+        <div id="status-card-container" class="md:col-span-1 flex flex-col gap-6">
+            <!-- Contador -->
+            <div id="counter-card" class="bg-white rounded-2xl shadow-xl overflow-hidden border border-slate-200">
+                <div class="bg-emerald-600 p-3 text-white text-center flex items-center justify-center gap-2">
+                    <i data-lucide="calendar-days" class="w-4 h-4 text-emerald-200"></i>
+                    <h3 id="event-name" class="font-bold uppercase tracking-widest text-xs italic">Cargando...</h3>
                 </div>
                 <div class="p-6 text-center">
-                    <div id="draw-date-display" class="text-slate-500 font-medium mb-1 text-xs italic text-pretty italic uppercase tracking-tighter">Cargando datos...</div>
-                    <div id="countdown" class="text-3xl font-black text-slate-900 mb-3 font-mono tracking-tighter">00h 00m 00s</div>
-                    <div id="status-badge" class="inline-block px-3 py-1 rounded-full text-[10px] font-bold uppercase bg-slate-100 text-slate-500 mb-4 tracking-widest">Inicializando</div>
+                    <div id="draw-date-display" class="text-slate-500 font-medium mb-1 text-xs italic uppercase tracking-tighter">---</div>
+                    <div id="countdown" class="text-3xl font-black text-slate-900 mb-3 font-mono tracking-tighter">--h --m --s</div>
+                    <div id="status-badge" class="inline-block px-3 py-1 rounded-full text-[10px] font-bold uppercase bg-slate-100 text-slate-500 mb-4 tracking-widest">Sincronizando...</div>
                     <div class="w-full bg-slate-100 h-1.5 rounded-full overflow-hidden">
                         <div id="progress-bar" class="bg-emerald-500 h-full transition-all duration-1000" style="width: 0%"></div>
                     </div>
                 </div>
             </div>
 
+            <!-- Panel de Información del Ganador (Mejorado) -->
+            <div id="last-winner-card" class="hidden bg-white rounded-2xl shadow-xl overflow-hidden border border-slate-200 relative">
+                <div class="absolute top-0 right-0 p-3">
+                     <div class="bg-emerald-100 text-emerald-600 p-2 rounded-lg">
+                        <i data-lucide="trophy" class="w-5 h-5"></i>
+                     </div>
+                </div>
+                <div class="p-6 text-center">
+                    <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-500 text-white text-[10px] font-black uppercase tracking-widest mb-4 winner-tag">
+                        <i data-lucide="crown" class="w-3 h-3"></i>
+                        Ganador Oficial
+                    </span>
+                    <div class="text-3xl font-black text-slate-800 mb-2 tracking-tight" id="info-winner-name">---</div>
+                    <div class="flex items-center justify-center gap-2 text-[10px] text-slate-400 font-bold uppercase tracking-widest border-t pt-4 mt-2">
+                        <i data-lucide="check-circle-2" class="w-3 h-3 text-emerald-500"></i>
+                        <span id="info-winner-time">---</span>
+                    </div>
+                </div>
+            </div>
+
             <div id="prizes-container" class="hidden bg-white rounded-2xl shadow-xl p-5 border border-slate-200">
-                <h3 class="font-bold text-slate-800 mb-3 flex items-center gap-2 text-xs uppercase tracking-wider">🏆 Premios</h3>
+                <h3 class="font-bold text-slate-800 mb-3 flex items-center gap-2 text-xs uppercase tracking-wider">
+                    <i data-lucide="gift" class="w-4 h-4 text-emerald-500"></i>
+                    Premios
+                </h3>
                 <ul id="prizes-list" class="space-y-2"></ul>
             </div>
         </div>
 
-        <!-- Columna Derecha: Participantes y Resultado -->
-        <div class="md:col-span-2 flex flex-col gap-6">
-            <!-- Panel del Ganador con Expectativa -->
-            <div id="winner-panel" class="hidden bg-emerald-600 rounded-3xl shadow-2xl p-8 md:p-12 text-white text-center winner-anim border-b-8 border-emerald-800 relative overflow-hidden">
-                <div class="relative z-10">
-                    <div id="winner-icon" class="text-6xl mb-4">⏳</div>
-                    <h2 id="winner-title" class="text-2xl font-black mb-2 uppercase italic tracking-tight">¡Seleccionando Ganador!</h2>
-                    <p id="winner-subtitle" class="text-emerald-100 mb-6 text-xs opacity-90">Analizando registros de participación...</p>
-                    
-                    <div id="winner-box" class="min-w-[280px] text-3xl md:text-5xl font-mono font-bold bg-white text-emerald-700 py-6 px-10 rounded-2xl inline-block shadow-2xl border-4 border-emerald-300 glow-effect">
-                        <span id="rolling-name">---</span>
-                    </div>
-                    
-                    <div class="mt-8 text-[9px] text-emerald-200 uppercase tracking-[0.2em] font-bold">Verificación Hash: <span id="draw-hash">...</span></div>
-                </div>
-            </div>
-
-            <!-- Lista de Participantes Compacta -->
-            <div class="bg-white rounded-2xl shadow-xl p-6 border border-slate-200">
-                <div class="flex justify-between items-center mb-4 border-b pb-3 border-slate-100">
-                    <h2 class="text-lg font-extrabold text-slate-800 tracking-tight italic uppercase">PARTICIPANTES</h2>
+        <!-- Columna Derecha: Participantes -->
+        <div id="drawing-column" class="md:col-span-2 flex flex-col gap-6">
+            <div id="participants-card" class="bg-white rounded-2xl shadow-xl p-6 border border-slate-200 h-full">
+                <div class="flex justify-between items-center mb-4 border-b pb-4 border-slate-100">
                     <div class="flex items-center gap-2">
-                         <span class="text-[10px] text-slate-400 font-bold uppercase">Total</span>
-                         <span id="total-participants" class="bg-emerald-500 text-white px-3 py-0.5 rounded-md font-bold text-sm">0</span>
+                        <i data-lucide="users" class="w-5 h-5 text-emerald-500"></i>
+                        <h2 class="text-lg font-extrabold text-slate-800 tracking-tight italic uppercase">Participantes</h2>
+                    </div>
+                    <div class="flex items-center gap-2">
+                         <span class="text-[10px] text-slate-400 font-bold uppercase tracking-widest">Registrados</span>
+                         <span id="total-participants" class="bg-slate-800 text-white px-3 py-1 rounded-lg font-black text-sm">0</span>
                     </div>
                 </div>
-                
-                <div id="participants-grid" class="custom-scroll flex flex-wrap gap-2 max-h-[350px] overflow-y-auto pr-2 content-start">
-                    <!-- Dinámico -->
-                </div>
+                <div id="participants-grid" class="custom-scroll flex flex-wrap gap-2 overflow-y-auto pr-2 content-start"></div>
             </div>
         </div>
     </main>
 
     <script>
-        // CONFIGURACIÓN INTERNA (Solo se usa si falla la carga externa)
-        const localBackupConfig = {
-            "proximo_sorteo": {
-                "fecha": "2024-12-18",
-                "hora": "19:05:00",
-                "zona_horaria": "America/Paramaribo",
-                "nombre_evento": "SORTEO FORTUNA (BACKUP)"
-            },
-            "premios": [{"puesto": 1, "desc": "Premio Mayor: $25,000", "icono": "💰"}],
-            "participantes_raw": "Daniel_E, Fortuna_Admin, User_Test"
-        };
-
-        let configSorteo = null;
+        const drawingModal = document.getElementById('drawing-modal');
+        const rollingNameDisplay = document.getElementById('rolling-name');
         const clockElement = document.getElementById('live-clock');
         const countdownElement = document.getElementById('countdown');
         const statusBadge = document.getElementById('status-badge');
-        const winnerPanel = document.getElementById('winner-panel');
-        const rollingNameDisplay = document.getElementById('rolling-name');
-        
+        const lastWinnerCard = document.getElementById('last-winner-card');
+        const counterCard = document.getElementById('counter-card');
+
+        let configSorteo = null;
+        let lastConfigHash = ''; // Para detectar cambios reales en el JSON
         let timeOffset = 0;
-        let participantesList = [];
-        let drawTime = null;
+        let timeSynced = false;
         let isDrawing = false;
-        let finalWinner = "";
+        let participantesList = [];
+        let drawTimestamp = null; 
 
-        // Función de carga con prioridad externa estricta
-        async function loadConfig() {
-            try {
-                // Intentamos cargar el archivo externo
-                const response = await fetch('config.json?v=' + Date.now()); // Anti-cache
-                if (response.ok) {
-                    configSorteo = await response.json();
-                    console.log("Configuración cargada desde config.json");
-                } else {
-                    throw new Error("Archivo no encontrado");
-                }
-            } catch (error) {
-                console.warn("No se pudo cargar config.json externo. Usando datos internos.");
-                configSorteo = localBackupConfig;
-            } finally {
-                initApp();
-            }
-        }
-
-        function seededRandom(seed) {
-            const x = Math.sin(seed++) * 10000;
-            return x - Math.floor(x);
-        }
-
-        function getWinnerDeterministically() {
-            const seedSource = configSorteo.proximo_sorteo.fecha + "|" + configSorteo.proximo_sorteo.hora + "|" + configSorteo.participantes_raw;
-            let seed = 0;
-            for (let i = 0; i < seedSource.length; i++) {
-                seed = ((seed << 5) - seed) + seedSource.charCodeAt(i);
-                seed |= 0;
-            }
-            document.getElementById('draw-hash').textContent = Math.abs(seed).toString(16).toUpperCase();
-            const randomIndex = Math.floor(seededRandom(seed) * participantesList.length);
-            return participantesList[randomIndex];
-        }
-
-        function startExpectationAnimation() {
-            if (isDrawing) return;
-            isDrawing = true;
-            
-            winnerPanel.classList.remove('hidden');
-            finalWinner = getWinnerDeterministically();
-            
-            let speed = 50; 
-            const duration = 5000; 
-            const startTime = Date.now();
-
-            function roll() {
-                const elapsed = Date.now() - startTime;
-                const tempName = participantesList[Math.floor(Math.random() * participantesList.length)];
-                rollingNameDisplay.textContent = tempName;
-
-                if (elapsed < duration) {
-                    speed = 50 + (Math.pow(elapsed / duration, 2) * 500); 
-                    setTimeout(roll, speed);
-                } else {
-                    finishDraw();
-                }
-            }
-            roll();
-        }
-
-        function finishDraw() {
-            rollingNameDisplay.textContent = finalWinner;
-            document.getElementById('winner-icon').textContent = "👑";
-            document.getElementById('winner-title').textContent = "¡GANADOR OFICIAL!";
-            document.getElementById('winner-subtitle').textContent = "Resultado verificado y definitivo.";
-            
-            // Explosión de Confeti
-            confetti({
-                particleCount: 150,
-                spread: 70,
-                origin: { y: 0.6 },
-                colors: ['#10b981', '#ffffff', '#fbbf24']
-            });
-
-            // Lluvia lateral de confeti
-            const end = Date.now() + 3000;
-            (function frame() {
-                confetti({ particleCount: 2, angle: 60, spread: 55, origin: { x: 0 }, colors: ['#10b981', '#ffffff'] });
-                confetti({ particleCount: 2, angle: 120, spread: 55, origin: { x: 1 }, colors: ['#10b981', '#ffffff'] });
-                if (Date.now() < end) requestAnimationFrame(frame);
-            }());
-        }
-
-        function processParticipants() {
-            participantesList = configSorteo.participantes_raw.split(/[\s,]+/).filter(p => p.trim() !== "").sort();
-            document.getElementById('total-participants').textContent = participantesList.length;
-            
-            document.getElementById('participants-grid').innerHTML = participantesList.map(p => {
-                const isPhone = p.startsWith('+597');
-                return `<div class="px-3 py-1.5 bg-slate-50 border border-slate-200 rounded-full text-[11px] font-semibold text-slate-600 flex items-center gap-1.5"><span class="w-1.5 h-1.5 rounded-full ${isPhone ? 'bg-emerald-400' : 'bg-slate-300'}"></span>${p}</div>`;
-            }).join('');
+        // Inicializar Iconos Lucide
+        function refreshIcons() {
+            lucide.createIcons();
         }
 
         async function syncTime() {
             try {
                 const response = await fetch('https://worldtimeapi.org/api/timezone/America/Paramaribo');
+                if (!response.ok) throw new Error('API Error');
                 const data = await response.json();
-                timeOffset = new Date(data.datetime).getTime() - new Date().getTime();
-                document.getElementById('sync-indicator').classList.replace('bg-emerald-500', 'bg-green-500');
-            } catch (e) { console.warn("Sincronización de hora fallida"); }
+                const surinameNow = new Date(data.datetime).getTime();
+                const systemNow = Date.now();
+                timeOffset = surinameNow - systemNow;
+                timeSynced = true;
+                document.getElementById('sync-indicator').classList.remove('bg-slate-300');
+                document.getElementById('sync-indicator').classList.add('bg-emerald-500', 'clock-flash');
+                refreshIcons();
+            } catch (e) {
+                setTimeout(syncTime, 3000);
+            }
         }
 
-        function update() {
-            if (!drawTime) return;
-            const now = new Date(new Date().getTime() + timeOffset);
-            clockElement.textContent = now.toLocaleTimeString('es-SR', { hour12: false });
-            const diff = drawTime - now;
+        // Función de inspección periódica (cada 1 min)
+        async function inspectNewDraws() {
+            try {
+                const response = await fetch('./config.json?t=' + Date.now());
+                if (response.ok) {
+                    const newConfig = await response.json();
+                    const newHash = JSON.stringify(newConfig.proximo_sorteo);
+                    
+                    // Si el sorteo ha cambiado en el JSON, reiniciamos la lógica
+                    if (newHash !== lastConfigHash) {
+                        configSorteo = newConfig;
+                        lastConfigHash = newHash;
+                        isDrawing = false; // Permitir nuevo sorteo si cambió la config
+                        initApp();
+                    }
+                }
+            } catch (e) { console.warn("Error inspeccionando config.json"); }
+        }
 
-            if (diff <= 0) {
-                countdownElement.textContent = "00h 00m 00s";
-                statusBadge.textContent = "Sorteo Finalizado";
-                statusBadge.className = "inline-block px-3 py-1 rounded-full text-[10px] font-bold uppercase bg-emerald-100 text-emerald-600 mb-4";
-                if (!isDrawing) startExpectationAnimation();
-                return;
-            }
-
-            const hours = Math.floor((diff / (1000 * 60 * 60)));
-            const mins = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
-            const secs = Math.floor((diff % (1000 * 60)) / 1000);
-            
-            countdownElement.textContent = `${hours}h ${mins}m ${secs}s`;
-            document.getElementById('progress-bar').style.width = `${Math.max(0, 100 - (diff / 600000 * 100))}%`;
+        function calculateWinner() {
+            if (!configSorteo) return null;
+            const seedSource = configSorteo.proximo_sorteo.fecha + configSorteo.proximo_sorteo.hora + configSorteo.participantes_raw;
+            let seed = 0;
+            for (let i = 0; i < seedSource.length; i++) seed = ((seed << 5) - seed) + seedSource.charCodeAt(i);
+            const winnerIdx = Math.abs(seed) % participantesList.length;
+            return participantesList[winnerIdx];
         }
 
         function initApp() {
-            drawTime = new Date(`${configSorteo.proximo_sorteo.fecha}T${configSorteo.proximo_sorteo.hora}`);
+            if (!configSorteo || !configSorteo.proximo_sorteo) return;
+
+            participantesList = configSorteo.participantes_raw.split(/[\s,]+/).filter(p => p.trim() !== "").sort();
+            document.getElementById('total-participants').textContent = participantesList.length;
+            document.getElementById('participants-grid').innerHTML = participantesList.map(p => {
+                const isPhone = p.startsWith('+597');
+                return `<div class="px-3 py-1.5 bg-white border border-slate-200 rounded-lg shadow-sm text-[11px] font-bold text-slate-600 flex items-center gap-1.5 hover:border-emerald-300 transition-colors">
+                    <i data-lucide="${isPhone ? 'smartphone' : 'user'}" class="w-3 h-3 text-emerald-500"></i>${p}
+                </div>`;
+            }).join('');
+
+            let fechaStr = configSorteo.proximo_sorteo.fecha;
+            const horaStr = configSorteo.proximo_sorteo.hora;
+            const partes = fechaStr.split('-');
+            const currentYear = new Date().getFullYear();
+            
+            let finalFecha = (partes.length === 3) ? fechaStr : `${currentYear}-${fechaStr}`;
+            const isoString = `${finalFecha}T${horaStr}-03:00`;
+            drawTimestamp = new Date(isoString).getTime();
+
             document.getElementById('event-name').textContent = configSorteo.proximo_sorteo.nombre_evento;
-            document.getElementById('draw-date-display').textContent = `${configSorteo.proximo_sorteo.fecha} | ${configSorteo.proximo_sorteo.hora}`;
+            document.getElementById('draw-date-display').textContent = `${finalFecha} | ${horaStr}`;
             
             if (configSorteo.premios?.length > 0) {
                 document.getElementById('prizes-container').classList.remove('hidden');
                 document.getElementById('prizes-list').innerHTML = configSorteo.premios.map(p => `
-                    <li class="p-2 bg-emerald-50 rounded border border-emerald-100 text-[11px] font-bold text-emerald-800 flex items-center gap-2"><span class="text-base">${p.icono}</span> ${p.desc}</li>
+                    <li class="p-3 bg-emerald-50 rounded-xl border border-emerald-100 text-[11px] font-bold text-emerald-800 flex items-center justify-between">
+                        <span class="flex items-center gap-2 font-black uppercase tracking-tight">${p.icono} ${p.desc}</span>
+                        <i data-lucide="check-square" class="w-3 h-3 opacity-30"></i>
+                    </li>
                 `).join('');
             }
-            processParticipants();
-            statusBadge.textContent = "Esperando hora";
+            refreshIcons();
         }
 
+        function update() {
+            if (!timeSynced || !drawTimestamp) return;
+            const nowSuriname = Date.now() + timeOffset;
+            const diff = drawTimestamp - nowSuriname;
+            const liveDate = new Date(nowSuriname);
+            clockElement.textContent = liveDate.toLocaleTimeString('es-SR', { hour12: false, timeZone: 'America/Paramaribo' });
+
+            if (diff <= 0) {
+                if (diff > -60000 && !isDrawing) {
+                    runDrawing();
+                } else if (diff <= -60000) {
+                    showCalculatedWinner();
+                }
+                
+                countdownElement.textContent = "00h 00m 00s";
+                statusBadge.textContent = "Sorteo Finalizado";
+                statusBadge.className = "inline-block px-3 py-1 rounded-full text-[10px] font-bold uppercase bg-emerald-100 text-emerald-600 mb-4";
+                return;
+            }
+
+            counterCard.classList.remove('hidden');
+            lastWinnerCard.classList.add('hidden');
+
+            const hours = Math.floor(diff / 3600000);
+            const mins = Math.floor((diff % 3600000) / 60000);
+            const secs = Math.floor((diff % 60000) / 1000);
+            countdownElement.textContent = `${hours.toString().padStart(2,'0')}h ${mins.toString().padStart(2,'0')}m ${secs.toString().padStart(2,'0')}s`;
+            statusBadge.textContent = "Esperando Sorteo";
+            statusBadge.className = "inline-block px-3 py-1 rounded-full text-[10px] font-bold uppercase bg-blue-100 text-blue-600 mb-4";
+        }
+
+        function showCalculatedWinner() {
+            const winner = calculateWinner();
+            if (winner) {
+                document.getElementById('info-winner-name').textContent = winner;
+                document.getElementById('info-winner-time').textContent = "Seleccionado el " + configSorteo.proximo_sorteo.fecha + " a las " + configSorteo.proximo_sorteo.hora;
+                lastWinnerCard.classList.remove('hidden');
+                counterCard.classList.add('hidden');
+            }
+        }
+
+        function runDrawing() {
+            isDrawing = true;
+            drawingModal.classList.remove('hidden');
+            drawingModal.classList.add('flex');
+
+            const finalWinner = calculateWinner();
+            let startTime = Date.now();
+            let duration = 6000;
+
+            function roll() {
+                let elapsed = Date.now() - startTime;
+                if (elapsed < duration) {
+                    rollingNameDisplay.textContent = participantesList[Math.floor(Math.random() * participantesList.length)];
+                    let nextTick = 50 + (Math.pow(elapsed/duration, 2) * 400);
+                    setTimeout(roll, nextTick);
+                } else {
+                    finishDrawing(finalWinner);
+                }
+            }
+            roll();
+        }
+
+        function finishDrawing(winner) {
+            rollingNameDisplay.textContent = winner;
+            document.getElementById('winner-icon-modal').innerHTML = `<i data-lucide="crown" class="w-16 h-16 text-yellow-300"></i>`;
+            document.getElementById('winner-title').textContent = "¡GANADOR SELECCIONADO!";
+            refreshIcons();
+
+            confetti({ particleCount: 200, spread: 90, origin: { y: 0.6 }, colors: ['#10b981', '#fbbf24', '#ffffff'] });
+
+            showCalculatedWinner();
+
+            setTimeout(() => {
+                drawingModal.classList.add('hidden');
+                drawingModal.classList.remove('flex');
+            }, 6000);
+        }
+
+        // Ejecutar primer carga
         syncTime();
-        loadConfig(); 
-        setInterval(update, 1000);
+        inspectNewDraws(); // Esto inicializa initApp y lastConfigHash
+        
+        // Intervalos
+        setInterval(update, 1000); // UI cada seg
+        setInterval(inspectNewDraws, 60000); // Inspección de nuevos sorteos cada minuto
     </script>
 </body>
 </html>
