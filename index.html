@@ -1,37 +1,72 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Sorteo Automático Suriname - Fortuna</title>
-    
-    <!-- Favicon SVG Directo -->
-    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='24' fill='%2310b981'/><path d='M35 25H70V38H48V46H65V59H48V75H35V25Z' fill='white'/></svg>">
+
+    <!-- Favicon SVG Directo (Copia exacta del Logo del Header) -->
+    <link rel="icon" type="image/svg+xml"
+        href="data:image/svg+xml,<svg width='100' height='100' viewBox='0 0 100 100' fill='none' xmlns='http://www.w3.org/2000/svg'><rect width='100' height='100' rx='24' fill='%2310b981'/><path d='M35 25H70V38H48V46H65V59H48V75H35V25Z' fill='white'/><rect x='52' y='70' width='18' height='5' rx='2.5' fill='%23A7F3D0'/></svg>">
 
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
     <script src="https://unpkg.com/lucide@latest"></script>
-    
+
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap');
-        body { font-family: 'Inter', system-ui, -apple-system, sans-serif; }
-        
-        .clock-flash { animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite; }
-        @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: .7; } }
-        
-        .modal-enter { animation: modalFadeIn 0.4s ease-out forwards; }
-        @keyframes modalFadeIn { from { opacity: 0; transform: scale(0.95); } to { opacity: 1; transform: scale(1); } }
 
-        .glow-effect { box-shadow: 0 0 30px rgba(255, 255, 255, 0.3); }
+        body {
+            font-family: 'Inter', system-ui, -apple-system, sans-serif;
+        }
 
-        .custom-scroll::-webkit-scrollbar { width: 6px; }
-        .custom-scroll::-webkit-scrollbar-track { background: #f1f1f1; border-radius: 10px; }
-        .custom-scroll::-webkit-scrollbar-thumb { background: #10b981; border-radius: 10px; }
+        .clock-flash {
+            animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: .7; }
+        }
+
+        .modal-enter {
+            animation: modalFadeIn 0.4s ease-out forwards;
+        }
+
+        @keyframes modalFadeIn {
+            from {
+                opacity: 0;
+                transform: scale(0.95);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        .glow-effect {
+            box-shadow: 0 0 30px rgba(255, 255, 255, 0.3);
+        }
+
+        .custom-scroll::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .custom-scroll::-webkit-scrollbar-track {
+            background: #f1f1f1;
+            border-radius: 10px;
+        }
+
+        .custom-scroll::-webkit-scrollbar-thumb {
+            background: #10b981;
+            border-radius: 10px;
+        }
 
         #floating-clock {
             position: fixed;
-            bottom: 2rem;
-            right: 2rem;
+            bottom: 1.5rem;
+            right: 1.5rem;
             z-index: 40;
             transition: all 0.3s ease;
         }
@@ -42,14 +77,16 @@
         }
     </style>
 </head>
-<body class="bg-slate-50 min-h-screen flex flex-col pb-12">
 
-    <!-- Navegación Estática -->
-    <nav id="main-nav" class="bg-white shadow-sm p-4 border-b-2 border-emerald-500 relative z-30">
+<body class="bg-slate-50 min-h-screen flex flex-col">
+
+    <!-- Navegación Sticky -->
+    <nav id="main-nav"
+        class="bg-white/80 backdrop-blur-md shadow-sm p-4 border-b-2 border-emerald-500 sticky top-0 z-50">
         <div class="max-w-6xl mx-auto flex justify-between items-center px-2">
             <div class="flex items-center gap-3">
-                <!-- Logo SVG Fortuna -->
-                <svg width="42" height="42" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <!-- Logo de Fortuna -->
+                <svg width="48" height="48" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
                     <defs>
                         <linearGradient id="fortunaGrad" x1="0%" y1="0%" x2="100%" y2="100%">
                             <stop offset="0%" style="stop-color:#10b981;stop-opacity:1" />
@@ -61,119 +98,176 @@
                     <rect x="52" y="70" width="18" height="5" rx="2.5" fill="#A7F3D0" />
                 </svg>
                 <div>
-                    <h1 class="text-lg font-extrabold text-slate-800 leading-none uppercase tracking-tighter">Fortuna</h1>
-                    <span class="text-[10px] text-emerald-600 font-bold uppercase tracking-widest">Sorteo Oficial</span>
+                    <h1 class="text-base font-extrabold text-slate-800 leading-none uppercase tracking-tighter">Fortuna
+                    </h1>
+                    <span class="text-[9px] text-emerald-600 font-bold uppercase tracking-widest leading-none">Sorteo
+                        Oficial</span>
                 </div>
             </div>
-            
-            <div class="hidden sm:flex items-center gap-2 text-slate-400">
-                <i data-lucide="shield-check" class="w-4 h-4"></i>
-                <span class="text-[10px] font-bold uppercase tracking-widest">Sistema Automatizado Verificado</span>
-            </div>
+
+            <a href="https://chat.whatsapp.com/GbegcL4XMDZK3xb1mpuKM5" target="_blank"
+                class="bg-green-500 hover:bg-green-600 text-white px-3 py-1.5 rounded-lg text-[10px] font-black uppercase flex items-center gap-2 transition-all shadow-md">
+                <i data-lucide="message-circle" class="w-3.5 h-3.5 fill-white"></i>
+                <span class="hidden sm:inline">Unirse</span>
+            </a>
         </div>
     </nav>
 
     <!-- Reloj Flotante -->
-    <div id="floating-clock" class="bg-white/90 backdrop-blur-md shadow-2xl p-4 rounded-2xl border border-emerald-100 flex items-center gap-4 ring-4 ring-emerald-500/10">
-        <div class="bg-emerald-500 p-2 rounded-xl text-white">
-            <i data-lucide="clock" class="w-5 h-5"></i>
+    <div id="floating-clock"
+        class="bg-white/95 backdrop-blur-md shadow-xl p-3 rounded-2xl border border-emerald-100 flex items-center gap-3 ring-4 ring-emerald-500/5">
+        <div class="bg-emerald-500 p-1.5 rounded-lg text-white">
+            <i data-lucide="clock" class="w-4 h-4"></i>
         </div>
         <div class="flex flex-col items-end">
-            <span class="text-[9px] uppercase tracking-widest text-emerald-600 font-bold leading-none mb-1">Hora Suriname</span>
-            <span id="live-clock" class="text-xl font-mono font-black text-slate-800 leading-none tracking-tighter">00:00:00</span>
+            <span
+                class="text-[8px] uppercase tracking-widest text-emerald-600 font-bold leading-none mb-0.5">Suriname</span>
+            <span id="live-clock"
+                class="text-base font-mono font-black text-slate-800 leading-none tracking-tighter">00:00:00</span>
         </div>
-        <div id="sync-indicator" class="w-3 h-3 rounded-full bg-slate-300 shadow-inner"></div>
+        <div id="sync-indicator" class="w-2 h-2 rounded-full bg-slate-300 shadow-inner"></div>
     </div>
 
     <!-- Modal de Sorteo -->
-    <div id="drawing-modal" class="fixed inset-0 z-[100] hidden items-center justify-center p-4 bg-slate-900/90 backdrop-blur-sm">
-        <div class="bg-emerald-600 w-full max-w-2xl rounded-3xl shadow-2xl p-8 md:p-12 text-white text-center modal-enter border-b-8 border-emerald-800 relative overflow-hidden">
+    <div id="drawing-modal"
+        class="fixed inset-0 z-[100] hidden items-center justify-center p-4 bg-slate-900/90 backdrop-blur-sm">
+        <div
+            class="bg-emerald-600 w-full max-w-2xl rounded-3xl shadow-2xl p-8 md:p-12 text-white text-center modal-enter border-b-8 border-emerald-800 relative overflow-hidden">
             <div class="relative z-10">
                 <div id="winner-icon-modal" class="mb-6 flex justify-center">
                     <i data-lucide="loader-2" class="w-16 h-16 animate-spin text-emerald-200"></i>
                 </div>
                 <h2 id="winner-title" class="text-3xl font-black mb-2 uppercase italic tracking-tight">¡SORTEANDO!</h2>
-                <p id="winner-subtitle" class="text-emerald-100 mb-8 text-sm opacity-90 uppercase tracking-widest font-semibold">Buscando al afortunado...</p>
-                
-                <div class="min-w-[280px] text-3xl md:text-5xl font-mono font-bold bg-white text-emerald-700 py-8 px-10 rounded-2xl inline-block shadow-2xl border-4 border-emerald-300 glow-effect">
+                <div
+                    class="min-w-[280px] text-3xl md:text-5xl font-mono font-bold bg-white text-emerald-700 py-8 px-10 rounded-2xl inline-block shadow-2xl border-4 border-emerald-300 glow-effect">
                     <span id="rolling-name">---</span>
-                </div>
-                
-                <div class="mt-10 flex items-center justify-center gap-2 text-[10px] text-emerald-200 uppercase tracking-[0.3em] font-bold">
-                    <i data-lucide="cpu" class="w-4 h-4"></i>
-                    Algoritmo de Selección Fortuna
                 </div>
             </div>
         </div>
     </div>
 
     <!-- Contenedor Principal -->
-    <main id="main-content" class="max-w-6xl mx-auto w-full p-4 md:p-6 grid grid-cols-1 md:grid-cols-3 gap-6">
-        <!-- Columna Izquierda: Estado -->
-        <div id="status-card-container" class="md:col-span-1 flex flex-col gap-6">
-            <div id="counter-card" class="bg-white rounded-2xl shadow-xl overflow-hidden border border-slate-200">
-                <div class="bg-emerald-600 p-3 text-white text-center flex items-center justify-center gap-2">
-                    <i data-lucide="calendar-days" class="w-4 h-4 text-emerald-200"></i>
-                    <h3 id="event-name" class="font-bold uppercase tracking-widest text-xs italic">Cargando...</h3>
+    <main id="main-content" class="max-w-6xl mx-auto w-full p-4 grid grid-cols-1 md:grid-cols-3 gap-4 flex-grow">
+        <div id="status-card-container" class="md:col-span-1 flex flex-col gap-4">
+
+            <!-- Contador -->
+            <div id="counter-card" class="bg-white rounded-2xl shadow-lg overflow-hidden border border-slate-200">
+                <div class="bg-emerald-600 p-2 text-white text-center">
+                    <h3 id="event-name" class="font-bold uppercase tracking-widest text-[10px] italic">Cargando...</h3>
                 </div>
-                <div class="p-6 text-center">
-                    <div id="draw-date-display" class="text-slate-500 font-medium mb-1 text-xs italic uppercase tracking-tighter">---</div>
-                    <div id="countdown" class="text-3xl font-black text-slate-900 mb-3 font-mono tracking-tighter">--h --m --s</div>
-                    <div id="status-badge" class="inline-block px-3 py-1 rounded-full text-[10px] font-bold uppercase bg-slate-100 text-slate-500 mb-4 tracking-widest">Sincronizando...</div>
+                <div class="p-5 text-center">
+                    <div id="draw-date-display" class="text-slate-500 font-medium mb-1 text-[10px] italic uppercase">---
+                    </div>
+                    <div id="countdown" class="text-2xl font-black text-slate-900 mb-2 font-mono tracking-tighter">--h
+                        --m --s</div>
+                    <div id="status-badge"
+                        class="inline-block px-2.5 py-0.5 rounded-full text-[9px] font-bold uppercase bg-slate-100 text-slate-500 mb-3 tracking-widest">
+                        Sincronizando...</div>
                     <div class="w-full bg-slate-100 h-1.5 rounded-full overflow-hidden">
-                        <div id="progress-bar" class="bg-emerald-500 h-full transition-all duration-1000" style="width: 0%"></div>
+                        <div id="progress-bar" class="bg-emerald-500 h-full transition-all duration-1000"
+                            style="width: 0%"></div>
                     </div>
                 </div>
             </div>
 
-            <div id="last-winner-card" class="hidden bg-white rounded-2xl shadow-xl overflow-hidden border border-slate-200 relative">
-                <div class="absolute top-0 right-0 p-3">
-                     <div class="bg-emerald-100 text-emerald-600 p-2 rounded-lg">
-                        <i data-lucide="trophy" class="w-5 h-5"></i>
-                     </div>
+            <!-- QR Y NOTA INTEGRADA -->
+            <div
+                class="bg-white rounded-2xl shadow-lg p-3 border border-slate-200 bg-gradient-to-b from-white to-slate-50">
+                <div class="flex items-center gap-3 mb-3">
+                    <div class="bg-white p-1 rounded-lg border border-slate-100 shadow-sm">
+                        <img id="group-qr"
+                            src="https://api.qrserver.com/v1/create-qr-code/?size=100x100&data=https%3A%2F%2Fchat.whatsapp.com%2FGbegcL4XMDZK3xb1mpuKM5&ecc=M&margin=1"
+                            alt="QR WhatsApp" class="w-14 h-14">
+                    </div>
+                    <div class="flex-grow">
+                        <h3 class="font-black text-slate-800 text-[9px] uppercase tracking-widest leading-none mb-1">
+                            Registro WhatsApp</h3>
+                        <p class="text-[8px] text-slate-500 font-medium leading-tight">Escanea para participar en vivo.</p>
+                        <a href="https://chat.whatsapp.com/GbegcL4XMDZK3xb1mpuKM5" target="_blank"
+                            class="inline-flex items-center gap-1 text-[8px] font-black text-emerald-600 uppercase mt-1 hover:underline">
+                            Enlace Directo <i data-lucide="external-link" class="w-2.5 h-2.5"></i>
+                        </a>
+                    </div>
                 </div>
-                <div class="p-6 text-center">
-                    <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-500 text-white text-[10px] font-black uppercase tracking-widest mb-4 winner-tag">
-                        <i data-lucide="crown" class="w-3 h-3"></i>
-                        Ganador Oficial
+
+                <div class="bg-emerald-50/50 border-t border-emerald-100 pt-2 flex gap-2 items-center">
+                    <div class="bg-emerald-100 p-1 rounded-full">
+                        <i data-lucide="info" class="w-3 h-3 text-emerald-600"></i>
+                    </div>
+                    <p class="text-[9px] text-emerald-900 leading-tight font-medium">
+                        <span class="font-black">AVISO:</span> Estar en el grupo es <span
+                            class="text-emerald-700 underline underline-offset-2">obligatorio</span> para premios.
+                    </p>
+                </div>
+            </div>
+
+            <!-- Ganador Reciente -->
+            <div id="last-winner-card"
+                class="hidden bg-white rounded-2xl shadow-lg overflow-hidden border border-slate-200">
+                <div class="p-5 text-center">
+                    <span
+                        class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-emerald-500 text-white text-[9px] font-black uppercase tracking-widest mb-3 winner-tag">
+                        <i data-lucide="crown" class="w-2.5 h-2.5"></i> Ganador
                     </span>
-                    <div class="text-3xl font-black text-slate-800 mb-2 tracking-tight" id="info-winner-name">---</div>
-                    <div class="flex items-center justify-center gap-2 text-[10px] text-slate-400 font-bold uppercase tracking-widest border-t pt-4 mt-2">
-                        <i data-lucide="check-circle-2" class="w-3 h-3 text-emerald-500"></i>
-                        <span id="info-winner-time">---</span>
+                    <div class="text-2xl font-black text-slate-800 mb-1 tracking-tight" id="info-winner-name">---</div>
+                    <div id="info-winner-time"
+                        class="text-[9px] text-slate-400 font-bold uppercase tracking-widest border-t pt-3 mt-2">---
                     </div>
                 </div>
             </div>
 
-            <div id="prizes-container" class="hidden bg-white rounded-2xl shadow-xl p-5 border border-slate-200">
-                <h3 class="font-bold text-slate-800 mb-3 flex items-center gap-2 text-xs uppercase tracking-wider">
-                    <i data-lucide="gift" class="w-4 h-4 text-emerald-500"></i>
-                    Premios
-                </h3>
-                <ul id="prizes-list" class="space-y-2"></ul>
+            <!-- Premios -->
+            <div id="prizes-container" class="hidden bg-white rounded-2xl shadow-lg p-4 border border-slate-200">
+                <h3 class="font-bold text-slate-800 mb-2 text-[10px] uppercase tracking-wider">Premios</h3>
+                <ul id="prizes-list" class="space-y-1.5"></ul>
             </div>
         </div>
 
-        <!-- Columna Derecha: Participantes -->
-        <div id="drawing-column" class="md:col-span-2 flex flex-col gap-6">
-            <div id="participants-card" class="bg-white rounded-2xl shadow-xl p-6 border border-slate-200 h-full">
-                <div class="flex justify-between items-center mb-4 border-b pb-4 border-slate-100">
+        <!-- Participantes -->
+        <div id="drawing-column" class="md:col-span-2 flex flex-col gap-4">
+            <div id="participants-card"
+                class="bg-white rounded-2xl shadow-lg p-5 border border-slate-200 h-full flex flex-col">
+                <div
+                    class="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-3 mb-3 border-b pb-3 border-slate-100">
                     <div class="flex items-center gap-2">
-                        <i data-lucide="users" class="w-5 h-5 text-emerald-500"></i>
-                        <h2 class="text-lg font-extrabold text-slate-800 tracking-tight italic uppercase">Participantes</h2>
+                        <i data-lucide="users" class="w-4 h-4 text-emerald-500"></i>
+                        <h2 class="text-base font-extrabold text-slate-800 tracking-tight italic uppercase">
+                            Participantes</h2>
+                        <span id="total-participants"
+                            class="bg-slate-800 text-white px-1.5 py-0.5 rounded text-[9px] font-black">0</span>
                     </div>
-                    <div class="flex items-center gap-2">
-                         <span class="text-[10px] text-slate-400 font-bold uppercase tracking-widest">Registrados</span>
-                         <span id="total-participants" class="bg-slate-800 text-white px-3 py-1 rounded-lg font-black text-sm">0</span>
+
+                    <div class="relative w-full lg:w-64">
+                        <div class="absolute inset-y-0 left-0 pl-2.5 flex items-center pointer-events-none">
+                            <i data-lucide="search" class="w-3.5 h-3.5 text-slate-400"></i>
+                        </div>
+                        <input type="text" id="participant-search"
+                            class="block w-full pl-8 pr-3 py-1.5 border border-slate-200 rounded-lg text-[11px] font-medium focus:ring-4 focus:ring-emerald-500/10 focus:border-emerald-500 outline-none transition-all"
+                            placeholder="Buscar por nombre...">
                     </div>
                 </div>
-                <div id="participants-grid" class="custom-scroll flex flex-wrap gap-2 overflow-y-auto pr-2 content-start"></div>
+
+                <div id="participants-grid"
+                    class="custom-scroll flex flex-wrap gap-1.5 overflow-y-auto pr-1 content-start flex-grow min-h-[300px]">
+                </div>
             </div>
         </div>
     </main>
 
+    <!-- Footer -->
+    <footer class="bg-slate-900 text-slate-500 py-4 px-4 mt-auto border-t-2 border-emerald-600">
+        <div class="max-w-6xl mx-auto flex justify-between items-center">
+            <div class="flex items-center gap-2">
+                <i data-lucide="shield-check" class="w-4 h-4 text-emerald-600"></i>
+                <span class="text-[9px] font-black uppercase tracking-wider">Verificado</span>
+            </div>
+            <div class="text-[8px] uppercase font-bold opacity-60">
+                Fortuna Sorteos &copy; 2025
+            </div>
+        </div>
+    </footer>
+
     <script>
-        // Lógica de JavaScript (idéntica a la anterior para mantener funcionalidad)
         const drawingModal = document.getElementById('drawing-modal');
         const rollingNameDisplay = document.getElementById('rolling-name');
         const clockElement = document.getElementById('live-clock');
@@ -181,14 +275,16 @@
         const statusBadge = document.getElementById('status-badge');
         const lastWinnerCard = document.getElementById('last-winner-card');
         const counterCard = document.getElementById('counter-card');
+        const searchInput = document.getElementById('participant-search');
+        const participantsGrid = document.getElementById('participants-grid');
 
         let configSorteo = null;
-        let lastConfigHash = ''; 
+        let lastConfigHash = '';
         let timeOffset = 0;
         let timeSynced = false;
         let isDrawing = false;
         let participantesList = [];
-        let drawTimestamp = null; 
+        let drawTimestamp = null;
 
         function refreshIcons() { lucide.createIcons(); }
 
@@ -199,8 +295,9 @@
                 const data = await response.json();
                 timeOffset = new Date(data.datetime).getTime() - Date.now();
                 timeSynced = true;
-                document.getElementById('sync-indicator').classList.replace('bg-slate-300', 'bg-emerald-500');
-                document.getElementById('sync-indicator').classList.add('clock-flash');
+                const syncInd = document.getElementById('sync-indicator');
+                syncInd.classList.replace('bg-slate-300', 'bg-emerald-500');
+                syncInd.classList.add('clock-flash');
                 refreshIcons();
             } catch (e) { setTimeout(syncTime, 3000); }
         }
@@ -214,45 +311,71 @@
                     if (newHash !== lastConfigHash) {
                         configSorteo = newConfig;
                         lastConfigHash = newHash;
-                        isDrawing = false; 
+                        isDrawing = false;
                         initApp();
                     }
+                } else {
+                    // Fallback para pruebas locales
+                    configSorteo = {
+                        "proximo_sorteo": {
+                            "nombre_evento": "GRAN SORTEO FORTUNA",
+                            "fecha": "2025-12-25",
+                            "hora": "20:00:00"
+                        },
+                        "participantes_raw": "Daniel_EFG, Ricardo_S, Maria_L, Suriname_User, Lucky_Fan, Winner_99, Fortuna_Fan",
+                        "premios": [
+                            { "icono": "💰", "desc": "Premio Mayor 500 SRD" },
+                            { "icono": "📱", "desc": "Recarga de Saldo" }
+                        ]
+                    };
+                    initApp();
                 }
-            } catch (e) {}
+            } catch (e) { console.error(e); }
         }
 
         function calculateWinner() {
-            if (!configSorteo) return null;
+            if (!configSorteo || participantesList.length === 0) return null;
             const seedSource = configSorteo.proximo_sorteo.fecha + configSorteo.proximo_sorteo.hora + configSorteo.participantes_raw;
             let seed = 0;
             for (let i = 0; i < seedSource.length; i++) seed = ((seed << 5) - seed) + seedSource.charCodeAt(i);
             return participantesList[Math.abs(seed) % participantesList.length];
         }
 
+        function renderParticipants(filter = "") {
+            const normalizedFilter = filter.toLowerCase().trim();
+            const filtered = participantesList.filter(p => p.toLowerCase().includes(normalizedFilter));
+
+            if (filtered.length === 0) {
+                participantsGrid.innerHTML = `<div class="w-full text-center py-12 text-slate-300 italic text-[10px]">Sin resultados</div>`;
+            } else {
+                participantsGrid.innerHTML = filtered.map(p => `
+                    <div class="participant-item px-2 py-1 bg-white border border-slate-200 rounded-md shadow-sm text-[10px] font-bold text-slate-600 flex items-center gap-1 hover:border-emerald-300 hover:text-emerald-700 transition-colors">
+                        <i data-lucide="user" class="w-2.5 h-2.5 text-emerald-500"></i>${p}
+                    </div>`).join('');
+            }
+            refreshIcons();
+        }
+
+        searchInput.addEventListener('input', (e) => renderParticipants(e.target.value));
+
         function initApp() {
             if (!configSorteo) return;
             participantesList = configSorteo.participantes_raw.split(/[\s,]+/).filter(p => p.trim() !== "").sort();
             document.getElementById('total-participants').textContent = participantesList.length;
-            document.getElementById('participants-grid').innerHTML = participantesList.map(p => {
-                const isPhone = p.startsWith('+597');
-                return `<div class="px-3 py-1.5 bg-white border border-slate-200 rounded-lg shadow-sm text-[11px] font-bold text-slate-600 flex items-center gap-1.5 hover:border-emerald-300 transition-colors">
-                    <i data-lucide="${isPhone ? 'smartphone' : 'user'}" class="w-3 h-3 text-emerald-500"></i>${p}
-                </div>`;
-            }).join('');
+            renderParticipants();
 
+            // Sincronización horaria para Suriname (UTC-3)
             const isoString = `${configSorteo.proximo_sorteo.fecha}T${configSorteo.proximo_sorteo.hora}-03:00`;
             drawTimestamp = new Date(isoString).getTime();
             document.getElementById('event-name').textContent = configSorteo.proximo_sorteo.nombre_evento;
             document.getElementById('draw-date-display').textContent = `${configSorteo.proximo_sorteo.fecha} | ${configSorteo.proximo_sorteo.hora}`;
-            
+
             if (configSorteo.premios?.length > 0) {
                 document.getElementById('prizes-container').classList.remove('hidden');
                 document.getElementById('prizes-list').innerHTML = configSorteo.premios.map(p => `
-                    <li class="p-3 bg-emerald-50 rounded-xl border border-emerald-100 text-[11px] font-bold text-emerald-800 flex items-center justify-between">
-                        <span class="flex items-center gap-2 font-black uppercase tracking-tight">${p.icono} ${p.desc}</span>
-                        <i data-lucide="check-square" class="w-3 h-3 opacity-30"></i>
-                    </li>
-                `).join('');
+                    <li class="p-1.5 bg-emerald-50 rounded-lg border border-emerald-100 text-[9px] font-bold text-emerald-800 flex items-center gap-2">
+                        <span class="text-xs">${p.icono}</span> ${p.desc}
+                    </li>`).join('');
             }
             refreshIcons();
         }
@@ -261,22 +384,30 @@
             if (!timeSynced || !drawTimestamp) return;
             const now = Date.now() + timeOffset;
             const diff = drawTimestamp - now;
-            clockElement.textContent = new Date(now).toLocaleTimeString('es-SR', { hour12: false, timeZone: 'America/Paramaribo' });
+            
+            clockElement.textContent = new Date(now).toLocaleTimeString('es-SR', { 
+                hour12: false, 
+                timeZone: 'America/Paramaribo' 
+            });
 
             if (diff <= 0) {
                 if (diff > -60000 && !isDrawing) runDrawing();
                 else if (diff <= -60000) showCalculatedWinner();
                 countdownElement.textContent = "00h 00m 00s";
-                statusBadge.textContent = "Sorteo Finalizado";
-                statusBadge.className = "inline-block px-3 py-1 rounded-full text-[10px] font-bold uppercase bg-emerald-100 text-emerald-600 mb-4";
+                statusBadge.textContent = "Finalizado";
+                statusBadge.className = "inline-block px-2.5 py-0.5 rounded-full text-[9px] font-bold uppercase bg-emerald-100 text-emerald-600 mb-3 tracking-widest";
                 return;
             }
+            
             counterCard.classList.remove('hidden');
             lastWinnerCard.classList.add('hidden');
-            const h = Math.floor(diff/3600000), m = Math.floor((diff%3600000)/60000), s = Math.floor((diff%60000)/1000);
-            countdownElement.textContent = `${h.toString().padStart(2,'0')}h ${m.toString().padStart(2,'0')}m ${s.toString().padStart(2,'0')}s`;
-            statusBadge.textContent = "Esperando Sorteo";
-            statusBadge.className = "inline-block px-3 py-1 rounded-full text-[10px] font-bold uppercase bg-blue-100 text-blue-600 mb-4";
+            const h = Math.floor(diff / 3600000), 
+                  m = Math.floor((diff % 3600000) / 60000), 
+                  s = Math.floor((diff % 60000) / 1000);
+            
+            countdownElement.textContent = `${h.toString().padStart(2, '0')}h ${m.toString().padStart(2, '0')}m ${s.toString().padStart(2, '0')}s`;
+            statusBadge.textContent = "Próximamente";
+            statusBadge.className = "inline-block px-2.5 py-0.5 rounded-full text-[9px] font-bold uppercase bg-slate-100 text-slate-500 mb-3 tracking-widest";
         }
 
         function showCalculatedWinner() {
@@ -298,7 +429,7 @@
                 let elap = Date.now() - start;
                 if (elap < dur) {
                     rollingNameDisplay.textContent = participantesList[Math.floor(Math.random() * participantesList.length)];
-                    setTimeout(roll, 50 + (Math.pow(elap/dur, 2) * 400));
+                    setTimeout(roll, 50 + (Math.pow(elap / dur, 2) * 400));
                 } else finishDrawing(winner);
             };
             roll();
@@ -306,18 +437,18 @@
 
         function finishDrawing(winner) {
             rollingNameDisplay.textContent = winner;
-            document.getElementById('winner-icon-modal').innerHTML = `<i data-lucide="crown" class="w-16 h-16 text-yellow-300"></i>`;
-            document.getElementById('winner-title').textContent = "¡GANADOR SELECCIONADO!";
             refreshIcons();
             confetti({ particleCount: 200, spread: 90, origin: { y: 0.6 } });
             showCalculatedWinner();
             setTimeout(() => drawingModal.classList.replace('flex', 'hidden'), 6000);
         }
 
+        // Inicio de procesos
         syncTime();
-        inspectNewDraws(); 
-        setInterval(update, 1000); 
+        inspectNewDraws();
+        setInterval(update, 1000);
         setInterval(inspectNewDraws, 60000); 
     </script>
 </body>
+
 </html>
